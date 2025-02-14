@@ -41,34 +41,38 @@
     // key w
     if (key == 87) {
       time = htmlVideoPlayer.currentTime;
-      hours = Math.floor(time / 3600);
-      hours = pad(hours, 2);
-      minutes = Math.floor((time - hours * 3600) / 60);
-      minutes = pad(minutes, 2);
-      seconds = Math.floor(time - hours * 3600 - minutes * 60);
-      seconds = pad(seconds, 2);
-      start = hours + ":" + minutes + ":" + seconds;
-      alert("start: " + start);
+      //hours = Math.floor(time / 3600);
+      //hours = pad(hours, 2);
+      //minutes = Math.floor((time - hours * 3600) / 60);
+      //minutes = pad(minutes, 2);
+      //seconds = Math.floor(time - hours * 3600 - minutes * 60);
+      //seconds = pad(seconds, 2);
+      //start = hours + ":" + minutes + ":" + seconds;
+      alert("start: " + Math.round(time));
     }
 
     // key e
     if (key == 69) {
       time2 = htmlVideoPlayer.currentTime;
-      hours2 = Math.floor(time2 / 3600);
-      hours2 = pad(hours2, 2);
-      minutes2 = Math.floor((time2 - hours2 * 3600) / 60);
-      minutes2 = pad(minutes2, 2);
-      seconds2 = Math.floor(time2 - hours2 * 3600 - minutes2 * 60);
-      seconds2 = pad(seconds2, 2);
-      end = hours2 + ":" + minutes2 + ":" + seconds2;
-      alert("end: " + end);
+      //hours2 = Math.floor(time2 / 3600);
+      //hours2 = pad(hours2, 2);
+      //minutes2 = Math.floor((time2 - hours2 * 3600) / 60);
+      //minutes2 = pad(minutes2, 2);
+      //seconds2 = Math.floor(time2 - hours2 * 3600 - minutes2 * 60);
+      //seconds2 = pad(seconds2, 2);
+      //end = hours2 + ":" + minutes2 + ":" + seconds2;
+      alert("end: " + Math.round(time2));
     }
 
     // key r
     if (key == 82) {
       b =
-        "[vod](" +
-        url +
+        '<iframe src="https://www.youtube.com/embed/@?start=' +
+        Math.round(time) +
+        "&end=" +
+        Math.round(time2) +
+        '" height="480" width="95%" seamless="seamless" frameborder="0" allowfullscreen></iframe>';
+      /*url +
         "#t=" +
         hours +
         ":" +
@@ -81,7 +85,7 @@
         minutes2 +
         ":" +
         seconds2 +
-        ")";
+        ")";*/
       navigator.clipboard
         .writeText(b)
         .then(() => {

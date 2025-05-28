@@ -1,0 +1,6 @@
+# Cleaned up .xprofile
+export PATH="$PATH:$HOME/.local/apps:$HOME/.local/scripts:$HOME/.local/bin"
+
+# Start background applications
+nm-applet &  # Network Manager applet
+blueman-applet &  # Bluetooth manager applet

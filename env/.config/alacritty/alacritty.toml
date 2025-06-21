@@ -9,7 +9,7 @@
 [colors]
 draw_bold_text_with_bright_colors = true
 
-[shell]
+[terminal.shell]
 program = "/bin/bash"
 args = ["--login", "-c", "tmux a -t default || tmux new -s default"]
 
@@ -50,22 +50,22 @@ text = "CellForeground"
 TERM = "xterm-256color"
 
 [font]
-size = 8.0
+size = 10.0
 
 [font.bold]
-family = "Fira Code Nerd Font"
+family = "FiraCodeiScript"
 style = "Bold"
 
 [font.bold_italic]
-family = "Fira Code Nerd Font"
+family = "FiraCodeiScript"
 style = "Bold Italic"
 
 [font.italic]
-family = "Fira Code Nerd Font"
+family = "FiraCodeiScript"
 style = "Italic"
 
 [font.normal]
-family = "Fira Code Nerd Font"
+family = "FiraCodeiScript"
 style = "Regular"
 
 [font.offset]
@@ -171,3 +171,5 @@ instance = "Alacritty"
 [window.padding]
 x = 6
 y = 6
+
+[terminal]

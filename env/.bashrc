@@ -1,22 +1,7 @@
-#  _                _             
-# | |              | |            
-# | |__   __ _  ___| | _____ _ __ 
-# | '_ \ / _` |/ __| |/ / _ \ '__|
-# | | | | (_| | (__|   <  __/ |   
-# |_| |_|\__,_|\___|_|\_\___|_|   
-#
-#        _           
-#       | |          
-#  _ __ | |__  
-# | '_ \| '_ \     Nobilis Benz (NB)
-# | | | | |_) |    http://www.youtube.com/c/NobilisBenz
-# |_| |_|_.__/     http://www.github.com/NobilisBenz/
-#
-#
 #  __    _ ___
 # |   \ | |   \     Nobilis Benz (NB)
-# | |\ \| |   /     http://www.youtube.com/c/NobilisBenz
-# | | \ | |   \     http://www.github.com/NobilisBenz/
+# | |\ \| | 0 /     http://www.youtube.com/c/NobilisBenz
+# | | \ | | 0 \     http://www.github.com/NobilisBenz/
 # |_|  \__|___/
 #
 # My bash config. Not much to see here; just some pretty standard stuff.
@@ -24,11 +9,8 @@
 ### EXPORT
 export TERM="xterm-256color"                      # getting proper colors
 export HISTCONTROL=ignoredups:erasedups           # no duplicate entries
-export EDITOR="emacsclient -t -a ''"              # $EDITOR use Emacs in terminal
-export VISUAL="emacsclient -c -a emacs"           # $VISUAL use Emacs in GUI mode
-
-### SET MANPAGER
-### Uncomment only one of these!
+export EDITOR="nvim"              # $EDITOR use nvim in terminal
+export VISUAL="nvim"              # $VISUAL use nvim in GUI mode
 
 ### "nvim" as manpager
 export MANPAGER="nvim +Man!"
@@ -58,10 +40,6 @@ if [ -d "$HOME/.local/bin" ] ;
   then PATH="$HOME/.local/bin:$PATH"
 fi
 
-if [ -d "$HOME/Applications" ] ;
-  then PATH="$HOME/Applications:$PATH"
-fi
-
 if [ -d "$HOME/.cargo/bin" ] ;
   then PATH="$HOME/.cargo/bin/:$PATH"
 fi
@@ -72,14 +50,6 @@ fi
 
 if [ -d "$HOME/go/bin/" ] ;
   then PATH="$HOME/go/bin/:$PATH"
-fi
-
-if [ -d "$HOME/zig/" ] ;
-  then PATH="$HOME/zig/:$PATH"
-fi
-
-if [ -d "$HOME/deps/depot_tools" ] ;
-  then PATH="$HOME/deps/depot_tools:$PATH"
 fi
 
 ### CHANGE TITLE OF TERMINALS
@@ -104,14 +74,24 @@ shopt -s checkwinsize # checks term size when bash regains control
 #ignore upper and lowercase when TAB completion
 bind "set completion-ignore-case on"
 
-### COUNTDOWN   
-cdown () {
-    N=$1
-  while [[ $((--N)) -gt  0 ]]
-    do
-        echo "$N" |  figlet -c | lolcat &&  sleep 1
-    done
+
+# study stream aliases
+# Requires https://github.com/caarlos0/timer to be installed. spd-say should ship with your distro
+declare -A pomo_options
+pomo_options["work"]="45"
+pomo_options["break"]="10"
+
+pomodoro () {
+  if [ -n "$1" -a -n "${pomo_options["$1"]}" ]; then
+  val=$1
+  echo $val | lolcat
+  timer ${pomo_options["$val"]}m
+  spd-say "'$val' session done"
+  fi
 }
+
+alias wo="pomodoro 'work'"
+alias br="pomodoro 'break'"
 
 ### Function extract for common file formats ###
 SAVEIFS=$IFS
@@ -158,30 +138,8 @@ fi
 
 IFS=$SAVEIFS
 
-# navigation
-up () {
-  local d=""
-  local limit="$1"
-
-  # Default to limit of 1
-  if [ -z "$limit" ] || [ "$limit" -le 0 ]; then
-    limit=1
-  fi
-
-  for ((i=1;i<=limit;i++)); do
-    d="../$d"
-  done
-
-  # perform cd. Show error if cd fails
-  if ! cd "$d"; then
-    echo "Couldn't go up $limit dirs.";
-  fi
-}
-
 ### ALIASES ###
-
 alias p='pnpm'
-
 alias m='mpv --ytdl-format=22'
 
 # navigation
@@ -238,9 +196,6 @@ alias stat='git status'  # 'status' is protected name so using 'stat' instead
 alias tag='git tag'
 alias newtag='git tag -a'
 
-# get error messages from journalctl
-alias jctl="journalctl -p 3 -xb"
-
 # gpg encryption
 # verify signature for isos
 alias gpg-check="gpg2 --keyserver-options auto-key-retrieve --verify"
@@ -254,17 +209,6 @@ alias tofish="sudo chsh $USER -s /bin/fish && echo 'Log out and log back in for 
 
 # bare git repo alias for managing my dotfiles
 alias config="/usr/bin/git --git-dir=$HOME/dotfiles --work-tree=$HOME"
-
-# termbin
-alias tb="nc termbin.com 9999"
-
-# the terminal rickroll
-alias rr='curl -s -L https://raw.githubusercontent.com/keroserene/rickrollrc/master/roll.sh | bash'
-
-### RANDOM COLOR SCRIPT ###
-# Get this script from my GitLab: gitlab.com/dwt1/shell-color-scripts
-# Or install it from the Arch User Repository: shell-color-scripts
-# colorscript random
 
 ### SETTING THE STARSHIP PROMPT ###
 eval "$(starship init bash)"

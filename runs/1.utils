@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Update package list
+sudo apt update
+
+# Install packages
+sudo apt install -y git curl dmenu awesome mpv feh pcmanfm lxappearance qutebrowser obs-studio fzf arandr
+sudo apt -y install ripgrep pavucontrol xclip jq tldr shutter python3-pip flatpak
+
+flatpak install flathub io.missioncenter.MissionCenter
+flatpak install flathub app.zen_browser.zen
+
+sudo add-apt-repository ppa:graphics-drivers/ppa
+ubuntu-drivers devices
+sudo apt install nvidia-driver-570

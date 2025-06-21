@@ -30,6 +30,7 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
+local battery_widget = require("battery-widget")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -41,6 +42,7 @@ if awesome.startup_errors then
 		text = awesome.startup_errors,
 	})
 end
+
 
 -- Handle runtime errors after startup
 do
@@ -204,6 +206,29 @@ awful.screen.connect_for_each_screen(function(s)
 		{ -- Right widgets
 			layout = wibox.layout.fixed.horizontal,
 			mykeyboardlayout,
+      battery_widget {
+        ac = "AC",
+        adapter = "BAT0",
+        ac_prefix = "AC: ",
+        battery_prefix = "",
+        percent_colors = {
+          { 25, "red"   },
+          { 50, "orange"},
+          {999, "green" },
+        },
+        listen = true,
+        timeout = 10,
+        widget_text = "${AC_BAT}${color_on}${percent}%${color_off}",
+        widget_font = "Fira Code iScript 8",
+        tooltip_text = "Battery ${state}${time_est}\nCapacity: ${capacity_percent}%",
+        alert_threshold = 5,
+        alert_timeout = 0,
+        alert_title = "Low battery !",
+        alert_text = "${AC_BAT}${time_est}",
+        -- alert_icon = "~/Downloads/low_battery_icon.png",
+        warn_full_battery = true,
+        -- full_battery_icon = "~/Downloads/full_battery_icon.png",
+      },
 			wibox.widget.systray(),
 			mytextclock,
 		},
@@ -234,9 +259,9 @@ globalkeys = gears.table.join(
 	awful.key({ modkey }, "k", function()
 		awful.client.focus.byidx(-1)
 	end, { description = "focus previous by index", group = "client" }),
-	awful.key({ modkey }, "w", function()
-		mymainmenu:show()
-	end, { description = "show main menu", group = "awesome" }),
+	-- awful.key({ modkey }, "w", function()
+	--	 mymainmenu:show()
+	-- end, { description = "show main menu", group = "awesome" }),
 
 	-- Layout manipulation
 	awful.key({ modkey, "Shift" }, "j", function()
@@ -296,6 +321,36 @@ globalkeys = gears.table.join(
 	awful.key({ modkey }, "d", function()
 		awful.spawn("dmenu_run")
 	end, { description = "Launch Dmenu", group = "awesome" }),
+ 
+	awful.key({ modkey }, "0", function()
+		awful.spawn("setxkbmap us")
+	end, { description = "Set Keyboard to US", group = "awesome" }),
+	awful.key({ modkey }, "9", function()
+		awful.spawn("setxkbmap ara")
+	end, { description = "Set Keyboard to Arabic", group = "awesome" }),
+	awful.key({ modkey }, "8", function()
+		awful.spawn("setxkbmap de")
+	end, { description = "Set Keyboard to German", group = "awesome" }),
+
+	awful.key({ modkey, "Shift" }, "0", function()
+		awful.spawn("xbacklight -set 100")
+	end, { description = "Set Brightness 100", group = "awesome" }),
+	awful.key({ modkey, "Shift" }, "9", function()
+		awful.spawn("xbacklight -set 80")
+	end, { description = "Set Brightness 100", group = "awesome" }),
+	awful.key({ modkey, "Shift" }, "8", function()
+		awful.spawn("xbacklight -set 50")
+	end, { description = "Set Brightness 100", group = "awesome" }),
+
+	awful.key({ modkey }, "y", function()
+		awful.spawn("flatpak run io.missioncenter.MissionCenter")
+	end, { description = "Launch Mission Center", group = "awesome" }),
+	awful.key({ modkey }, "f", function()
+		awful.spawn("flatpak run com.github.tenderowl.frog")
+	end, { description = "Launch Frog", group = "awesome" }),
+	awful.key({ modkey }, "w", function()
+		awful.spawn("flatpak run app.zen_browser.zen")
+	end, { description = "Launch Zen Browser", group = "awesome" }),
 	awful.key({ modkey, "Shift" }, "s", function()
 		awful.spawn("flameshot gui --clipboard")
 	end, { description = "Launch Flameshot", group = "awesome" }),
@@ -596,7 +651,8 @@ client.connect_signal("unfocus", function(c)
 end)
 -- }}}
 
+awful.spawn.with_shell("xrandr --output DP-0 --off --output DP-1 --off --output DP-2 --off --output DP-3 --off --output HDMI-0 --mode 1920x1080 --pos 0x1080 --rotate normal --output DP-4 --primary --mode 1920x1080 --pos 0x0 --rotate normal")
 awful.spawn.with_shell("nm-applet")
 awful.spawn.with_shell("feh --randomize --bg-fill ~/Pictures/") -- feh sets random wallpaper
 awful.spawn.with_shell("obsidian")
-awful.spawn.with_shell("picom")
+awful.spawn.with_shell("picom -b --config ~/.config/picom/picom.conf")

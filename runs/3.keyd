@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+git clone https://github.com/rvaiya/keyd
+cd keyd
+make && sudo make install
+sudo systemctl enable --now keyd
+
+sudo systemctl enable keyd --now
+sudo touch /etc/keyd/default.conf
+
+sudo chmod 777 /etc/keyd/default.conf
+cat >/etc/keyd/default.conf <<EOL
+[ids]
+
+*
+
+[main]
+
+capslock = overload(symbols, esc)
+
+[symbols]
+
+h = left
+j = down
+k = up
+l = right
+
+r = f2
+f = f11
+EOL
+
+sudo keyd reload
+rm -rf keyd

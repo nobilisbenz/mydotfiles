@@ -1,0 +1,68 @@
+#!/bin/bash
+
+# Define colors for echo
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+
+# Function to echo messages in color
+function echo_color() {
+    echo -e "${1}${2}${NC}"
+}
+
+# Update package list
+echo_color $YELLOW "Updating package list..."
+sudo apt update
+
+# Check if Node.js is installed
+if command -v node &> /dev/null; then
+    echo_color $GREEN "Node.js is already installed."
+else
+    echo_color $YELLOW "Installing Node.js..."
+    
+    # Download and install nvm:
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+
+    # in lieu of restarting the shell
+    \. "$HOME/.nvm/nvm.sh"
+
+    # Download and install Node.js:
+    nvm install 22
+
+    # Verify the Node.js version:
+    node -v # Should print "v22.16.0".
+    nvm current # Should print "v22.16.0".
+
+    # Verify npm version:
+    npm -v # Should print "10.9.2".
+
+    # Download and install pnpm:
+    corepack enable pnpm
+    # Verify pnpm version:
+    pnpm -v
+
+
+    # Check if pnpm is installed
+    if command -v pnpm &> /dev/null; then
+    echo_color $GREEN "pnpm is already installed."
+    else
+	echo_color $GREEN "Node.js installed successfully!"
+
+    echo_color $GREEN "pnpm installed successfully!"
+    fi
+fi
+
+
+
+# Check if bun is installed
+if command -v bun &> /dev/null; then
+    echo_color $GREEN "bun is already installed."
+else
+    echo_color $YELLOW "Installing bun..."
+    curl -fsSL https://bun.sh/install | bash
+
+    echo_color $GREEN "bun installed successfully!"
+fi
+
+echo_color $GREEN "All installations completed successfully!"

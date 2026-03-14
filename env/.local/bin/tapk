@@ -1,0 +1,74 @@
+#!/usr/bin/bash
+
+# Define Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Check arguments
+if [ "$#" -ne 2 ]; then
+    echo -e "${RED}Usage: tapk <input.apk> <output.apk>${NC}"
+    exit 1
+fi
+
+INPUT_APK="$1"
+OUTPUT_APK="$2"
+KEYSTORE="debug.keystore"
+ALIAS="androiddebugkey"
+PASS="android"
+
+# Check if input file exists
+if [ ! -f "$INPUT_APK" ]; then
+    echo -e "${RED}Error: Input file '$INPUT_APK' not found.${NC}"
+    exit 1
+fi
+
+# Step 1: Zipalign
+echo -e "${BLUE}[1/3] Aligning APK...${NC}"
+ALIGNED_APK="${INPUT_APK%.*}-aligned.apk"
+
+# Remove existing aligned file if checking
+if [ -f "$ALIGNED_APK" ]; then
+    rm "$ALIGNED_APK"
+fi
+
+zipalign -p -f 4 "$INPUT_APK" "$ALIGNED_APK"
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Error: Zipalign failed. Make sure 'zipalign' is installed.${NC}"
+    exit 1
+fi
+echo -e "${GREEN}✔ APK Aligned.${NC}"
+
+# Step 2: Check/Generate Keystore
+echo -e "${BLUE}[2/3] Checking Keystore...${NC}"
+if [ ! -f "$KEYSTORE" ]; then
+    echo -e "${YELLOW}Keystore '$KEYSTORE' not found. Generating new debug keystore...${NC}"
+    keytool -genkey -v -keystore "$KEYSTORE" -storepass "$PASS" -alias "$ALIAS" -keypass "$PASS" -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}Error: Keytool command failed. Make sure 'keytool' is installed.${NC}"
+        # Cleanup
+        rm "$ALIGNED_APK"
+        exit 1
+    fi
+    echo -e "${GREEN}✔ Keystore generated.${NC}"
+else
+    echo -e "${GREEN}✔ Using existing keystore: $KEYSTORE${NC}"
+fi
+
+# Step 3: Sign
+echo -e "${BLUE}[3/3] Signing APK...${NC}"
+apksigner sign --ks "$KEYSTORE" --ks-pass "pass:$PASS" --key-pass "pass:$PASS" --out "$OUTPUT_APK" "$ALIGNED_APK"
+
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Error: Signing failed. Make sure 'apksigner' is installed.${NC}"
+    # Cleanup
+    rm "$ALIGNED_APK"
+    exit 1
+fi
+
+# Cleanup intermediate file
+rm "$ALIGNED_APK"
+
+echo -e "${GREEN}SUCCESS: APK signed and saved to $OUTPUT_APK${NC}"

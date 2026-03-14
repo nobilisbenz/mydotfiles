@@ -1,25 +1,41 @@
 #!/usr/bin/env bash
 
+# Check if we want to "Go" (just change directory) or "Sessionize"
+mode="session"
+if [[ $1 == "-g" ]]; then
+    mode="go"
+    shift # Remove -g from the arguments list
+fi
+
+# Determine the target directory
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
-    selected=$(find ~/Obsidian/Brain/Databases/ ~/Dev ~/Dev/projects ~/Dev/work ~/Dev/personal/yt -mindepth 1 -maxdepth 1 -type d | fzf)
+    selected=$(find ~/Dev ~/Dev/projects ~/Dev/work ~/Dev/personal ~/Dev/tools ~/Dev/YAMN -mindepth 1 -maxdepth 1 -type d | fzf)
 fi
 
 if [[ -z $selected ]]; then
     exit 0
 fi
 
+# Logic for "Go" mode: Just CD in the current pane
+if [[ $mode == "go" ]]; then
+    # send-keys -t {current_pane} "cd path" ENTER
+    tmux send-keys "cd $selected" C-m
+    exit 0
+fi
+
+# --- Original Session Logic Below ---
 selected_name=$(basename "$selected" | tr . _)
 tmux_running=$(pgrep tmux)
 
 if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
-    tmux new-session -s $selected_name -c $selected
+    tmux new-session -s "$selected_name" -c "$selected"
     exit 0
 fi
 
-if ! tmux has-session -t=$selected_name 2> /dev/null; then
-    tmux new-session -ds $selected_name -c $selected
+if ! tmux has-session -t="$selected_name" 2> /dev/null; then
+    tmux new-session -ds "$selected_name" -c "$selected"
 fi
 
-tmux switch-client -t $selected_name
+tmux switch-client -t "$selected_name"

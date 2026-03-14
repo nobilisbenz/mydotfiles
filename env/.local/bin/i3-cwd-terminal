@@ -1,0 +1,27 @@
+#!/bin/bash
+
+SESSION="opencode"
+TITLE="ghostty_scratchpad"
+
+if ! xdotool search --name "^$TITLE$" > /dev/null; then
+    ID=$(i3-msg -t get_tree | jq '.. | select(.focused? == true).pid')
+    [ -n "$ID" ] && CWD=$(readlink /proc/$ID/cwd)
+    [ ! -d "$CWD" ] && CWD=$HOME
+
+    if ! tmux has-session -t "$SESSION" 2>/dev/null; then
+        tmux new-session -d -s "$SESSION" -c "$CWD"
+    else
+        tmux send-keys -t "$SESSION" " cd '$CWD' && clear" Enter
+    fi
+
+    # Launch with the title flag that works for your build
+    ghostty --title="$TITLE" -e tmux attach-session -t "$SESSION" &
+    
+    sleep 0.4
+    # Force it into the scratchpad if it missed the rule
+    i3-msg "[title=\"^$TITLE$\"] move scratchpad"
+fi
+
+# TOGGLE AND SNAP TO CENTER
+# This command shows the scratchpad AND forces it to the center of the current screen
+i3-msg "[title=\"^$TITLE$\"] scratchpad show, move absolute position center"

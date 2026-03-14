@@ -1,0 +1,58 @@
+# --- Terminal Shell ---
+shell-integration = bash
+class = floating_shell
+# Replicating your tmux_chooser setup
+command = /home/nabi/.local/bin/tmux_chooser
+# --- Font Settings ---
+font-family = "FiraCodeiScript"
+font-size = 14
+font-style = "Regular"
+font-style-bold = "Bold"
+font-style-italic = "Italic"
+font-style-bold-italic = "Bold Italic"
+
+# --- Colors (Matched to your Alacritty theme) ---
+background = #000000
+foreground = #bbc2cf
+cursor-color = #528bff
+selection-background = #3e4451
+selection-foreground = #ffffff
+
+# Normal Palette (0-7)
+palette = 0=#1c1f24
+palette = 1=#ff6c6b
+palette = 2=#98be65
+palette = 3=#da8548
+palette = 4=#51afef
+palette = 5=#c678dd
+palette = 6=#5699af
+palette = 7=#abb2bf
+
+# Bright Palette (8-15)
+palette = 8=#5b6268
+palette = 9=#da8548
+palette = 10=#4db5bd
+palette = 11=#ecbe7b
+palette = 12=#3071db
+palette = 13=#a9a1e1
+palette = 14=#46d9ff
+palette = 15=#dfdfdf
+
+# --- Window Appearance ---
+background-opacity = 1.0
+window-padding-x = 6
+window-padding-y = 0
+#window-decoration = none
+window-decoration = false
+gtk-titlebar = false
+
+
+
+# --- Keybindings ---
+# Ghosty handles standard Copy/Paste (Ctrl+Shift+C/V) automatically, 
+# but we can explicitly set them to match your config:
+#keybind=ctrl+shift+c=copy_to_clipboard
+#keybind=ctrl+shift+v=paste_from_clipboard
+#keybind=ctrl+plus=increase_font_size
+#keybind=ctrl+minus=decrease_font_size
+#keybind=ctrl+zero=reset_font_size

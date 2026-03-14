@@ -1,0 +1,106 @@
+# i3 Config (Migrated from AwesomeWM)
+set $mod Mod4
+set $alt Mod1
+
+# Font for window titles
+font pango:Fira Code iScript 8
+
+# Autostart (Your exact commands from rc.lua)
+exec_always --no-startup-id xrandr --output HDMI-0 --mode 1920x1080 --pos 0x1080 --rotate normal --output DP-4 --primary --mode 1920x1080 --pos 0x0 --rotate normal
+exec_always --no-startup-id feh --randomize --bg-fill ~/Pictures/
+exec --no-startup-id nm-applet
+exec --no-startup-id picom -b
+exec --no-startup-id obsidian
+exec --no-startup-id yawkaty
+exec_always --no-startup-id ~/.config/polybar/launch.sh
+
+# Gaps (Matching your beautiful.useless_gap = 2)
+gaps inner 2
+gaps outer 0
+
+# Remove titlebars from all windows
+for_window [class="^.*"] border pixel 2
+
+# Optional: If you want NO borders at all (not even the 2px line)
+# for_window [class="^.*"] border none
+
+# Keybindings: Window Management
+bindsym $mod+q kill
+bindsym $mod+f fullscreen toggle
+bindsym $mod+Control+space floating toggle
+bindsym $mod+m layout stacked
+bindsym $mod+t layout toggle split
+bindsym $mod+n move scratchpad
+bindsym $mod+Shift+n scratchpad show
+
+# Focus Management (j/k and Alt+h/j/k/l)
+# --- Resizing Configuration ---
+bindsym $mod+r mode "resize"
+
+mode "resize" {
+    # Resize with H J K L
+    bindsym h resize shrink width 10 px or 10 ppt
+    bindsym j resize grow height 10 px or 10 ppt
+    bindsym k resize shrink height 10 px or 10 ppt
+    bindsym l resize grow width 10 px or 10 ppt
+
+    # Back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+l move right
+
+bindsym $alt+h focus left
+bindsym $alt+j focus down
+bindsym $alt+k focus up
+bindsym $alt+l focus right
+
+# Launchers (Your Apps)
+bindsym $mod+Return exec ghostty
+for_window [title="^ghostty_scratchpad$"] floating enable, move scratchpad, border none, resize set 1400 800, move absolute position center
+bindsym $mod+space exec --no-startup-id ~/.local/bin/i3-cwd-terminal
+
+bindsym $mod+b exec --no-startup-id polybar-msg cmd toggle
+bindsym $mod+e exec pcmanfm
+bindsym $mod+d exec dmenu_run
+bindsym $mod+w exec flatpak run app.zen_browser.zen
+bindsym $mod+y exec flatpak run io.missioncenter.MissionCenter
+bindsym $mod+Shift+f exec flatpak run com.github.tenderowl.frog
+bindsym $mod+Shift+s exec flameshot gui --clipboard
+
+# Keyboard Layouts
+bindsym $mod+0 exec setxkbmap us
+bindsym $mod+9 exec setxkbmap ara
+bindsym $mod+8 exec setxkbmap de
+
+# Brightness
+bindsym $mod+Shift+0 exec xbacklight -set 100
+bindsym $mod+Shift+9 exec xbacklight -set 80
+bindsym $mod+Shift+8 exec xbacklight -set 50
+
+# System
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+q exec i3-msg exit
+
+# Workspaces (Icons from your rc.lua)
+set $ws1 "1:  "
+set $ws2 "2:  "
+set $ws3 "3:  "
+set $ws4 "4:  "
+set $ws5 "5:  "
+
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+5 workspace number $ws5
+
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5

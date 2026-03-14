@@ -14,26 +14,12 @@ YELLOW='\033[0;33m'
 NC='\033[0m' # No Color
 
 # Check if Rust is installed
-if ! command -v rustc &> /dev/null; then
-    print_color $YELLOW "Installing Rust..."
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-    source $HOME/.cargo/env
-
-    print_color $GREEN "Rust is installed."
-    
-    print_color $YELLOW "Restarting the terminal..."
-    sudo reboot
-else
-    print_color $GREEN "Rust is already installed."
-fi
 
 # Update package list
 print_color $GREEN "Updating package list..."
 sudo apt update
 
 # Update Rust
-print_color $YELLOW "Updating Rust..."
-rustup update
 
 # Install dependencies
 print_color $YELLOW "Installing dependencies..."

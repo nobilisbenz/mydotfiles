@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Function to print colored messages
+print_color() {
+    local color="$1"
+    shift
+    echo -e "${color}$*${NC}"
+}
+
+# Define color codes
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+

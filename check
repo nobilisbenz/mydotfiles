@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+dry_run="0"
+verbose="0"
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+ENV_DIR="$SCRIPT_DIR/env"
+
+if [ -z "$XDG_CONFIG_HOME" ]; then
+    XDG_CONFIG_HOME="$HOME/.config"
+fi
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --dry)
+            dry_run="1"
+            ;;
+        -v|--verbose)
+            verbose="1"
+            ;;
+        *)
+            echo "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+log() {
+    echo "$1"
+}
+
+dry_log() {
+    if [[ $dry_run == "1" ]]; then
+        echo "[DRY_RUN]: $1"
+    else
+        echo "$1"
+    fi
+}
+
+compare_and_copy() {
+    local source="$1"
+    local dest="$2"
+    local description="$3"
+
+    if [[ ! -e "$source" ]]; then
+        [[ $verbose == "1" ]] && log "Source does not exist: $source"
+        return
+    fi
+
+    if [[ -d "$source" && -d "$dest" ]]; then
+        if diff -rq "$source" "$dest" &>/dev/null; then
+            [[ $verbose == "1" ]] && log "Identical: $description"
+            return
+        fi
+    elif [[ -e "$dest" ]]; then
+        if cmp -s "$source" "$dest" 2>/dev/null; then
+            [[ $verbose == "1" ]] && log "Identical: $description"
+            return
+        fi
+    fi
+
+    dry_log "CHANGED: $description"
+    dry_log "    cp -r \"$source\" \"$dest\""
+
+    if [[ $dry_run == "0" ]]; then
+        mkdir -p "$(dirname "$dest")"
+        cp -r "$source" "$dest"
+    fi
+}
+
+log "========================================="
+log "Checking for changes in system config..."
+log "========================================="
+log "ENV_DIR: $ENV_DIR"
+log "XDG_CONFIG_HOME: $XDG_CONFIG_HOME"
+log "HOME: $HOME"
+log ""
+
+compare_and_copy "$HOME/.bashrc" "$ENV_DIR/.bashrc" "~/.bashrc"
+compare_and_copy "$HOME/.zshrc" "$ENV_DIR/.zshrc" "~/.zshrc"
+compare_and_copy "$HOME/.tmux.conf" "$ENV_DIR/.tmux.conf" "~/.tmux.conf"
+
+if [[ -d "$XDG_CONFIG_HOME" ]]; then
+    for config_dir in "$XDG_CONFIG_HOME"/*; do
+        [[ -d "$config_dir" ]] || continue
+        config_name=$(basename "$config_dir")
+        
+        if [[ -d "$ENV_DIR/.config/$config_name" ]]; then
+            compare_and_copy "$config_dir" "$ENV_DIR/.config/$config_name" "~/.config/$config_name"
+        else
+            [[ $verbose == "1" ]] && log "SKIP (new): ~/.config/$config_name"
+        fi
+    done
+fi
+
+if [[ -d "$HOME/.local" ]]; then
+    for item in "$HOME/.local"/*; do
+        [[ -e "$item" ]] || continue
+        item_name=$(basename "$item")
+        
+        if [[ -e "$ENV_DIR/.local/$item_name" ]]; then
+            compare_and_copy "$item" "$ENV_DIR/.local/$item_name" "~/.local/$item_name"
+        else
+            [[ $verbose == "1" ]] && log "SKIP (new): ~/.local/$item_name"
+        fi
+    done
+fi
+
+log ""
+log "Done!"

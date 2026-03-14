@@ -1,3 +1,5 @@
+bash script to install my tools
+
 ./run --dry <nameApp_toInstall>  
 ./run --dry
 

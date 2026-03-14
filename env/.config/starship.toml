@@ -1,128 +1,44 @@
 # Don't print a new line at the start of the prompt
 add_newline = false
 
-# Make prompt a single line instead of two lines
+# Order: Arrow -> Folder -> Git Info -> Status
+format = """$character$directory$git_branch$git_status"""
+
 [line_break]
 disabled = true
 
-# Replace the "❯" symbol in the prompt with "➜"
-[character]                            # The name of the module we are configuring is "character"
-success_symbol = "[➜](bold green)"     # The "success_symbol" segment is being set to "➜" with the color "bold green"
-
-
-[aws]
-symbol = " "
-
-[battery]
-full_symbol = ""
-charging_symbol = ""
-discharging_symbol = ""
-
-[conda]
-symbol = " "
-
-[dart]
-symbol = " "
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[➜](bold red)"
 
 [directory]
-read_only = " "
-
-[docker_context]
-format = "via [🐋 $context](blue bold)"
-
-[elixir]
-symbol = " "
-
-[elm]
-symbol = " "
+style = "bold cyan"
+truncation_length = 1
+truncation_symbol = ""
+repo_root_style = "bold cyan"
+format = "[$path]($style) " 
 
 [git_branch]
-format = " [$symbol$branch]($style) "
-style = "bold yellow"
-symbol = " "
-
-[golang]
-symbol = " "
-
-[haskell]
-symbol = " "
-
-[hg_branch]
-symbol = " "
-
-[java]
-symbol = " "
-
-[julia]
-symbol = " "
-
-[memory_usage]
-symbol = " "
-
-[nim]
-symbol = " "
-
-[nix_shell]
-symbol = " "
-
-[nodejs]
-symbol = " "
-
-[package]
-symbol = " "
-
-[perl]
-symbol = " "
-
-[php]
-symbol = " "
-
-[python]
-symbol = " "
-format = "[$symbol$version]($style) "
-style = "bold green"
-
-[ruby]
-symbol = " "
-
-[rust]
-symbol = " "
-
-[swift]
-symbol = "ﯣ "
-
-
-[git_commit]
-commit_hash_length = 8
-style = "bold white"
+symbol = "" 
+style = "bold red"
+# Literal blue wrapper for the red branch name
+format = '[git:\(](bold blue)[$branch]($style)[\) ](bold blue)'
 
 [git_status]
-conflicted = "⚔️ "
-#ahead = "🏎️ 💨×${count}"
-#behind = "🐢×${count}"
-#diverged = "🔱 🏎️ 💨 ×${ahead_count} 🐢 ×${behind_count}"
-untracked = "🛤️  ×${count}"
-stashed = "📦 "
-modified = "📝×${count}"
-staged = "🗃️ ×${count}"
-renamed = "📛×${count}"
-deleted = "🗑️ ×${count}"
-style = "bright-white"
-#format = "$all_status $ahead_behind"
+style = "bold yellow" # Keep the status yellow as seen in your screenshots
+# This format ensures they appear tightly packed without extra spaces
+#format = '([$all_status$ahead_behind]($style) )'
+format = '([$status]($style) )'
 
-[hostname]
-ssh_only = false
-format = "<[$hostname]($style)>"
-trim_at = "-"
-style = "bold dimmed white"
-disabled = true
-
-[time]
-time_format = "%T"
-format = "🕙 $time($style) "
-style = "bright-white"
-disabled = true
-
-[username]
-style_user = "bold green"
-show_always = false
+# VISUAL VALUES: Distinct but minimal
+# ----------------------------------
+# up_to_date = ""
+# conflicted = "=" # Traditional "equals" for conflict
+# ahead = "⇡"      # Clean arrow for commits to push
+# behind = "⇣"     # Clean arrow for commits to pull
+# diverged = "⇕"   # Indicates both ahead and behind
+# untracked = "?"   # Standard symbol for new files
+# modified = "!"    # Standard symbol for changes
+# staged = "+"      # Standard symbol for added to index
+# deleted = "✘"      # Clear mark for removed files
+# renamed = "»"      # Symbol for moved files

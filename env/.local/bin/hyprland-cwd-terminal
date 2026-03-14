@@ -1,0 +1,26 @@
+#!/bin/bash
+
+SESSION="opencode"
+TITLE="ghostty_scratchpad"
+
+if ! hyprctl clients -j | jq -e '.[] | select(.title | test("^'"$TITLE"'$"))' > /dev/null 2>&1; then
+    FOCUSED=$(hyprctl activewindow -j 2>/dev/null)
+    if [ -n "$FOCUSED" ]; then
+        PID=$(echo "$FOCUSED" | jq -r '.pid')
+        [ -n "$PID" ] && CWD=$(readlink /proc/$PID/cwd 2>/dev/null)
+    fi
+    [ ! -d "$CWD" ] && CWD=$HOME
+
+    if ! tmux has-session -t "$SESSION" 2>/dev/null; then
+        tmux new-session -d -s "$SESSION" -c "$CWD"
+    else
+        tmux send-keys -t "$SESSION" " cd '$CWD' && clear" Enter
+    fi
+
+    ghostty --title="$TITLE" -e tmux attach-session -t "$SESSION" &
+    
+    sleep 0.4
+    hyprctl dispatch movetoworkspace special,pid:$(pgrep -f "ghostty.*$TITLE" | head -1)
+fi
+
+hyprctl dispatch togglespecialworkspace,scratchpad

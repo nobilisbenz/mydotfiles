@@ -1,0 +1,109 @@
+# Hyprland Config
+$mod = SUPER
+$alt = ALT
+
+font = pango:Fira Code iScript 8
+
+exec-once = ~/.config/polybar/launch.sh
+exec-once = feh --randomize --bg-fill ~/Pictures/
+exec-once = nm-applet
+exec-once = picom -b
+exec-once = obsidian
+exec-once = yawkaty
+
+general {
+    gaps_in = 2
+    gaps_out = 0
+    border_size = 2
+    col.active_border = rgba(ffffffaa)
+    col.inactive_border = rgba(ffffff55)
+}
+
+windowrulev2 = bordercolor rgba(ffffffaa), floating:0
+windowrulev2 = bordercolor rgba(ffffff55), floating:1
+
+$ws1 = 1:  
+$ws2 = 2:  
+$ws3 = 3:  
+$ws4 = 4:  
+$ws5 = 5:  
+
+bind = $mod, Q, kill
+bind = $mod, F, fullscreen
+bind = $mod CONTROL, space, togglefloating
+bind = $mod, M, exec, hyprctl layoutmsg layoutstack
+bind = $mod, T, exec, hyprctl layoutmsg togglesplit
+
+bind = $mod, N, movetoworkspace, special
+bind = $mod SHIFT, N, togglespecialworkspace, special
+
+bind = $mod, R, submap, resize
+submap = resize
+bind = , H, resizeactive, -10 0
+bind = , J, resizeactive, 0 10
+bind = , K, resizeactive, 0 -10
+bind = , L, resizeactive, 10 0
+bind = , RETURN, submap, reset
+bind = , ESCAPE, submap, reset
+submap = reset
+
+bind = $mod SHIFT, J, movewindow, d
+bind = $mod SHIFT, K, movewindow, u
+bind = $mod SHIFT, H, movewindow, l
+bind = $mod SHIFT, L, movewindow, r
+
+bind = $alt, H, focus, l
+bind = $alt, J, focus, d
+bind = $alt, K, focus, u
+bind = $alt, L, focus, r
+
+bind = $mod, RETURN, exec, ghostty
+bind = $mod, SPACE, exec, ~/.local/bin/hyprland-cwd-terminal
+
+bind = $mod, B, exec, polybar-msg cmd toggle
+bind = $mod, E, exec, pcmanfm
+bind = $mod, D, exec, rofi -show drun
+bind = $mod, W, exec, flatpak run app.zen_browser.zen
+bind = $mod, Y, exec, flatpak run io.missioncenter.MissionCenter
+bind = $mod SHIFT, F, exec, flatpak run com.github.tenderowl.frog
+# bind = $mod SHIFT, S, exec, flameshot gui --clipboard
+bind = $mod SHIFT, S, exec, grim -g "$(slurp)" -c | wl-copy
+
+bind = $mod, 0, exec, setxkbmap us
+bind = $mod, 9, exec, setxkbmap ara
+bind = $mod, 8, exec, setxkbmap de
+
+# Wayland alternative:
+# bind = $mod, 0, exec, wlr-keyboard-layout us
+# bind = $mod, 9, exec, wlr-keyboard-layout ara
+# bind = $mod, 8, exec, wlr-keyboard-layout de
+
+bind = $mod SHIFT, 0, exec, xbacklight -set 100
+bind = $mod SHIFT, 9, exec, xbacklight -set 80
+bind = $mod SHIFT, 8, exec, xbacklight -set 50
+
+# Wayland alternative:
+# bind = $mod SHIFT, 0, exec, brightnessctl set 100%
+# bind = $mod SHIFT, 9, exec, brightnessctl set 80%
+# bind = $mod SHIFT, 8, exec, brightnessctl set 50%
+
+bind = $mod SHIFT, R, reload
+bind = $mod SHIFT, Q, exit
+
+workspace = $ws1
+workspace = $ws2
+workspace = $ws3
+workspace = $ws4
+workspace = $ws5
+
+bind = $mod, 1, workspace, 1
+bind = $mod, 2, workspace, 2
+bind = $mod, 3, workspace, 3
+bind = $mod, 4, workspace, 4
+bind = $mod, 5, workspace, 5
+
+bind = $mod SHIFT, 1, movetoworkspace, 1
+bind = $mod SHIFT, 2, movetoworkspace, 2
+bind = $mod SHIFT, 3, movetoworkspace, 3
+bind = $mod SHIFT, 4, movetoworkspace, 4
+bind = $mod SHIFT, 5, movetoworkspace, 5

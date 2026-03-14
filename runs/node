@@ -11,10 +11,6 @@ function echo_color() {
     echo -e "${1}${2}${NC}"
 }
 
-# Update package list
-echo_color $YELLOW "Updating package list..."
-sudo apt update
-
 # Check if Node.js is installed
 if command -v node &> /dev/null; then
     echo_color $GREEN "Node.js is already installed."

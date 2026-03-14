@@ -9,7 +9,7 @@ NC='\033[0m' # No Color
 
 # Update package list
 echo -e "${BLUE}Updating package list...${NC}"
-sudo apt update
+sudo pacman -Sy
 
 # Install eza
 if ! command -v eza &> /dev/null; then
@@ -30,7 +30,7 @@ fi
 # Install Tmux
 if ! command -v tmux &> /dev/null; then
     echo -e "${GREEN}Installing Tmux...${NC}"
-    sudo apt install -y tmux
+    sudo pacman -S --needed tmux
 else
     echo -e "${YELLOW}Tmux is already installed.${NC}"
 fi

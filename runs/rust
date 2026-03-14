@@ -19,8 +19,6 @@ if ! command -v rustc &> /dev/null; then
     source $HOME/.cargo/env
 
     print_color $GREEN "Rust is installed."
-    print_color $YELLOW "Restarting the terminal..."
-    sudo reboot
 else
     print_color $GREEN "Rust is already installed."
 fi

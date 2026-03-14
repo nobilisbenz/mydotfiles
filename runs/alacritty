@@ -17,13 +17,13 @@ NC='\033[0m' # No Color
 
 # Update package list
 print_color $GREEN "Updating package list..."
-sudo apt update
+sudo pacman -Sy
 
 # Update Rust
 
 # Install dependencies
 print_color $YELLOW "Installing dependencies..."
-sudo apt install cmake g++ pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3
+sudo pacman -S --needed cmake gcc pkg-config freetype2 fontconfig libxcb xkbcommon python
 
 # Clone Alacritty repository
 print_color $YELLOW "Cloning Alacritty repository..."

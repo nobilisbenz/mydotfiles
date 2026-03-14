@@ -13,3 +13,16 @@ GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 NC='\033[0m' # No Color
 
+# Install requirements for Legion 5 PC with NVIDIA RTX 3060
+print_color $GREEN "Installing NVIDIA and laptop utilities..."
+
+# Install NVIDIA drivers
+paru -S nvidia-dkms nvidia-utils nvidia-settings --noconfirm
+
+# Install laptop utilities
+sudo pacman -S --needed tlp powertop acpi
+
+# Install input drivers
+sudo pacman -S --needed xf86-input-synaptics libinput
+
+print_color $GREEN "Installation completed."

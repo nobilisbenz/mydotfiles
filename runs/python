@@ -12,3 +12,17 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 NC='\033[0m' # No Color
+
+# Install Python development tools
+print_color $GREEN "Installing Python development tools..."
+sudo pacman -S --needed python python-pip python-virtualenv python-pipenv
+
+# Install pyenv for Python version management
+if [ ! -d "$HOME/.pyenv" ]; then
+    print_color $YELLOW "Installing pyenv..."
+    curl https://pyenv.run | bash
+else
+    print_color $GREEN "pyenv is already installed."
+fi
+
+print_color $GREEN "Python setup completed."

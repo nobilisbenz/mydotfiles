@@ -1,19 +1,14 @@
 #!/usr/bin/env bash
-dry_run="0"
 
 DEV_ENV="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 if [ -z "$XDG_CONFIG_HOME" ]; then
-    echo "no xdg config hom"
+    echo "no xdg config home"
     echo "using ~/.config"
     XDG_CONFIG_HOME=$HOME/.config
 fi
 
-if [ -z "$DEV_ENV" ]; then
-    echo "env var DEV_ENV needs to be present"
-    exit 1
-fi
-
+dry_run="0"
 if [[ $1 == "--dry" ]]; then
     dry_run="1"
 fi
@@ -28,46 +23,55 @@ log() {
 
 log "env: $DEV_ENV"
 
-update_files() {
-    log "copying over files from: $1"
-    pushd $1 &> /dev/null
-    (
-        configs=`find . -mindepth 1 -maxdepth 1 -type d`
-        for c in $configs; do
-            directory=${2%/}/${c#./}
-            log "    removing: rm -rf $directory"
+configs=($(ls -d $DEV_ENV/env/.config/*/ 2>/dev/null | xargs -n1 basename))
+configs+=("ALL")
 
-            if [[ $dry_run == "0" ]]; then
-                rm -rf $directory
-            fi
+echo "Available dev environments:"
+selected=($(printf "%s\n" "${configs[@]}" | fzf --multi --prompt="Select configs to copy: "))
 
-            log "    copying env: cp $c $2"
-            if [[ $dry_run == "0" ]]; then
-                cp -r ./$c $2
-            fi
-        done
+if [[ ${#selected[@]} -eq 0 ]]; then
+    echo "No selection made. Exiting."
+    exit 0
+fi
 
-    )
-    popd &> /dev/null
-}
+if [[ " ${selected[*]} " =~ " ALL " ]]; then
+    selected=("${configs[@]}")
+    selected=("${selected[@]:0:$(( ${#selected[@]} - 1 ))}")
+fi
 
-copy() {
-    log "removing: $2"
-    if [[ $dry_run == "0" ]]; then
-        rm $2
+failed=()
+
+for choice in "${selected[@]}"; do
+    src="$DEV_ENV/env/.config/$choice"
+    dest="$XDG_CONFIG_HOME/$choice"
+    
+    if [[ ! -d "$src" ]]; then
+        echo "Skipping $choice - not a directory"
+        continue
     fi
-    log "copying: $1 to $2"
+    
+    log "    removing: rm -rf $dest"
     if [[ $dry_run == "0" ]]; then
-        cp $1 $2
+        rm -rf "$dest" 2>/dev/null
     fi
-}
+    
+    log "    copying: $choice -> $XDG_CONFIG_HOME"
+    if [[ $dry_run == "0" ]]; then
+        if cp -r "$src" "$dest"; then
+            echo "SUCCESS: $choice installed"
+        else
+            echo "FAILED: $choice"
+            failed+=("$choice")
+        fi
+    fi
+done
 
-update_files $DEV_ENV/env/.config $XDG_CONFIG_HOME
-# update_files $DEV_ENV/env/.local $HOME/.local
-#
-# copy $DEV_ENV/tmux-sessionizer/tmux-sessionizer $HOME/.local/scripts/tmux-sessionizer
-# copy $DEV_ENV/env/.zsh_profile $HOME/.zsh_profile
-# copy $DEV_ENV/env/.zshrc $HOME/.zshrc
-# copy $DEV_ENV/env/.xprofile $HOME/.xprofile
-# copy $DEV_ENV/env/.tmux-sessionizer $HOME/.tmux-sessionizer
-# copy $DEV_ENV/dev-env $HOME/.local/scripts/dev-env
+if [[ ${#failed[@]} -gt 0 ]]; then
+    echo ""
+    echo "Failed installations: ${failed[*]}"
+    echo "Fix the issues and re-run the script"
+    exit 1
+fi
+
+echo ""
+echo "All selected configs installed successfully!"

@@ -4,8 +4,8 @@ return {
 		"tpope/vim-fugitive",
         config = function()
             vim.keymap.set("n", "<leader>gg", vim.cmd.Git)
-
             local myFugitive = vim.api.nvim_create_augroup("myFugitive", {})
+
 
             local autocmd = vim.api.nvim_create_autocmd
             autocmd("BufWinEnter", {
@@ -92,7 +92,7 @@ return {
         },
         -- setting up with keys={} allows plugin to load when command runs at the start
         keys = {
-            { "<leader>lg", "<cmd>LazyGit<cr>", desc = "Open lazy git" },
+            { "<leader>G", "<cmd>LazyGit<cr>", desc = "Open lazy git" },
         },
     }
 }

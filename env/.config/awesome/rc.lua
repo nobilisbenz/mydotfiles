@@ -192,47 +192,67 @@ awful.screen.connect_for_each_screen(function(s)
 	})
 
 	-- Create the wibox
-	s.mywibox = awful.wibar({ position = "top", screen = s, height = 16, bg = "#000000" })
+	s.mywibox = awful.wibar({ 
+    position = "top", 
+    screen = s,
+    -- margins = {
+    --     left = 15,
+    --     right = 15
+    -- }, 
+    height = 14, 
+    bg = "#000000" 
+  })
 
 	-- Add widgets to the wibox
 	s.mywibox:setup({
-		layout = wibox.layout.align.horizontal,
-		{ -- Left widgets
-			layout = wibox.layout.fixed.horizontal,
-			s.mytaglist,
-			s.mypromptbox,
-		},
-		nil,
-		{ -- Right widgets
-			layout = wibox.layout.fixed.horizontal,
-			mykeyboardlayout,
-      battery_widget {
-        ac = "AC",
-        adapter = "BAT0",
-        ac_prefix = "AC: ",
-        battery_prefix = "",
-        percent_colors = {
-          { 25, "red"   },
-          { 50, "orange"},
-          {999, "green" },
+    -- layout = wibox.layout.align.horizontal,
+    -- Add a margin container as the top-level widget
+    widget = wibox.container.margin,
+    left = 15,
+    right = 15,
+    {
+      widget = wibox.container.background,
+      {
+        layout = wibox.layout.align.horizontal,
+        expand = "none",
+        { -- Left widgets
+          layout = wibox.layout.fixed.horizontal,
+          s.mytaglist,
+          s.mypromptbox,
         },
-        listen = true,
-        timeout = 10,
-        widget_text = "${AC_BAT}${color_on}${percent}%${color_off}",
-        widget_font = "Fira Code iScript 8",
-        tooltip_text = "Battery ${state}${time_est}\nCapacity: ${capacity_percent}%",
-        alert_threshold = 5,
-        alert_timeout = 0,
-        alert_title = "Low battery !",
-        alert_text = "${AC_BAT}${time_est}",
-        -- alert_icon = "~/Downloads/low_battery_icon.png",
-        warn_full_battery = true,
-        -- full_battery_icon = "~/Downloads/full_battery_icon.png",
-      },
-			wibox.widget.systray(),
-			mytextclock,
-		},
-	})
+        nil,
+        { -- Right widgets
+          layout = wibox.layout.fixed.horizontal,
+          mykeyboardlayout,
+          battery_widget {
+            ac = "AC",
+            adapter = "BAT0",
+            ac_prefix = "AC: ",
+            battery_prefix = "",
+            percent_colors = {
+              { 25, "red"   },
+              { 50, "orange"},
+              {999, "green" },
+            },
+            listen = true,
+            timeout = 10,
+            widget_text = "${AC_BAT}${color_on}${percent}%${color_off}",
+            widget_font = "Fira Code iScript 8",
+            tooltip_text = "Battery ${state}${time_est}\nCapacity: ${capacity_percent}%",
+            alert_threshold = 5,
+            alert_timeout = 0,
+            alert_title = "Low battery !",
+            alert_text = "${AC_BAT}${time_est}",
+            -- alert_icon = "~/Downloads/low_battery_icon.png",
+            warn_full_battery = true,
+            -- full_battery_icon = "~/Downloads/full_battery_icon.png",
+          },
+          wibox.widget.systray(),
+          mytextclock,
+        },
+	    }
+    }
+  })
 end)
 -- }}}
 
@@ -348,12 +368,23 @@ globalkeys = gears.table.join(
 	awful.key({ modkey }, "f", function()
 		awful.spawn("flatpak run com.github.tenderowl.frog")
 	end, { description = "Launch Frog", group = "awesome" }),
+	awful.key({ modkey }, "b", function()
+		awful.spawn("flatpak run org.blender.Blender")
+	end, { description = "Launch Blender", group = "awesome" }),
 	awful.key({ modkey }, "w", function()
 		awful.spawn("flatpak run app.zen_browser.zen")
 	end, { description = "Launch Zen Browser", group = "awesome" }),
 	awful.key({ modkey, "Shift" }, "s", function()
 		awful.spawn("flameshot gui --clipboard")
 	end, { description = "Launch Flameshot", group = "awesome" }),
+
+
+	-- awful.key({ modkey, "Control" }, "l", function()
+	-- 	awful.spawn("voxtype record start")
+	-- end, { description = "Launch Voxtype", group = "awesome" }),
+	-- awful.key({ modkey, "Control" }, "s", function()
+	-- 	awful.spawn("voxtype record stop")
+	-- end, { description = "Stop Voxtype", group = "awesome" }),
 
 	-- Wibar toggle keybinding removed since wibar is disabled
 	awful.key({ modkey, "Shift" }, "b", function()
@@ -656,3 +687,4 @@ awful.spawn.with_shell("nm-applet")
 awful.spawn.with_shell("feh --randomize --bg-fill ~/Pictures/") -- feh sets random wallpaper
 awful.spawn.with_shell("obsidian")
 awful.spawn.with_shell("picom -b --config ~/.config/picom/picom.conf")
+awful.spawn.with_shell("yawkaty")

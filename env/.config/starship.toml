@@ -21,14 +21,11 @@ format = "[$path]($style) "
 [git_branch]
 symbol = "" 
 style = "bold red"
-# Literal blue wrapper for the red branch name
 format = '[git:\(](bold blue)[$branch]($style)[\) ](bold blue)'
 
 [git_status]
-style = "bold yellow" # Keep the status yellow as seen in your screenshots
-# This format ensures they appear tightly packed without extra spaces
-#format = '([$all_status$ahead_behind]($style) )'
-format = '([$status]($style) )'
+style = "bold yellow"
+format = '([$all_status$ahead_behind]($style) )'
 
 # VISUAL VALUES: Distinct but minimal
 # ----------------------------------

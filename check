@@ -60,9 +60,10 @@ compare_and_copy() {
     fi
 
     dry_log "CHANGED: $description"
-    dry_log "    cp -r \"$source\" \"$dest\""
+    dry_log "    rm -rf \"$dest\" && cp -r \"$source\" \"$dest\""
 
     if [[ $dry_run == "0" ]]; then
+        rm -rf "$dest"
         mkdir -p "$(dirname "$dest")"
         cp -r "$source" "$dest"
     fi
@@ -87,6 +88,17 @@ if [[ -d "$XDG_CONFIG_HOME" ]]; then
         
         if [[ -d "$ENV_DIR/.config/$config_name" ]]; then
             compare_and_copy "$config_dir" "$ENV_DIR/.config/$config_name" "~/.config/$config_name"
+        else
+            [[ $verbose == "1" ]] && log "SKIP (new): ~/.config/$config_name"
+        fi
+    done
+
+    for config_file in "$XDG_CONFIG_HOME"/*.*; do
+        [[ -f "$config_file" ]] || continue
+        config_name=$(basename "$config_file")
+        
+        if [[ -e "$ENV_DIR/.config/$config_name" ]]; then
+            compare_and_copy "$config_file" "$ENV_DIR/.config/$config_name" "~/.config/$config_name"
         else
             [[ $verbose == "1" ]] && log "SKIP (new): ~/.config/$config_name"
         fi

@@ -10,9 +10,9 @@
 draw_bold_text_with_bright_colors = true
 
 [terminal.shell]
-program = "/bin/bash"
-args = ["--login", "-c", "tmux a -t default || tmux new -s default"]
-
+program = "/home/nabi/.local/bin/tmux_chooser"
+# program = "/bin/bash"
+# args = ["--login", "-c", "tmux a -t default || tmux new -s default"]
 
 [colors.bright]
 black = "#5b6268"
@@ -132,32 +132,42 @@ chars = "\f"
 key = "L"
 mods = "Control"
 
-[[keyboard.bindings]]
-action = "ScrollPageUp"
-key = "PageUp"
-mode = "~Alt"
-mods = "None"
+# [[keyboard.bindings]]
+# action = "ScrollPageUp"
+# key = "PageUp"
+# mode = "~Alt"
+# mods = "None"
+#
+# [[keyboard.bindings]]
+# action = "ScrollPageDown"
+# key = "PageDown"
+# mode = "~Alt"
+# mods = "None"
+#
+# [[keyboard.bindings]]
+# action = "ScrollToTop"
+# key = "Home"
+# mode = "~Alt"
+# mods = "Shift"
+#
+# [[keyboard.bindings]]
+# action = "ScrollToBottom"
+# key = "End"
+# mode = "~Alt"
+# mods = "Shift"
 
-[[keyboard.bindings]]
-action = "ScrollPageDown"
-key = "PageDown"
-mode = "~Alt"
-mods = "None"
+# [[keyboard.bindings]]
+# action = "ScrollLineUp"
+# key = "K"
+# mods = "Control"
 
-[[keyboard.bindings]]
-action = "ScrollToTop"
-key = "Home"
-mode = "~Alt"
-mods = "Shift"
-
-[[keyboard.bindings]]
-action = "ScrollToBottom"
-key = "End"
-mode = "~Alt"
-mods = "Shift"
+# [[keyboard.bindings]]
+# action = "ScrollLineDown"
+# key = "J"
+# mods = ["Control","Shift"]
 
 [scrolling]
-history = 5000
+history = 10000
 
 [window]
 dynamic_padding = false
@@ -170,6 +180,6 @@ instance = "Alacritty"
 
 [window.padding]
 x = 6
-y = 6
+y = 0
 
 [terminal]

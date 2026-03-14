@@ -44,12 +44,20 @@ if [ -d "$HOME/.cargo/bin" ] ;
   then PATH="$HOME/.cargo/bin/:$PATH"
 fi
 
-if [ -d "/urs/local/go/bin/" ] ;
+if [ -d "/usr/local/go/bin/" ] ;
   then PATH="/usr/local/go/bin:$PATH"
 fi
 
 if [ -d "$HOME/go/bin/" ] ;
   then PATH="$HOME/go/bin/:$PATH"
+fi
+
+if [ -d "$HOME/flutter/bin/" ] ;
+  then PATH="$HOME/flutter/bin/:$PATH"
+fi
+
+if [ -d "/opt/zig/" ] ;
+  then PATH="/opt/zig/:$PATH"
 fi
 
 ### CHANGE TITLE OF TERMINALS
@@ -213,3 +221,19 @@ alias config="/usr/bin/git --git-dir=$HOME/dotfiles --work-tree=$HOME"
 ### SETTING THE STARSHIP PROMPT ###
 eval "$(starship init bash)"
 . "$HOME/.cargo/env"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+export ANDROID_HOME=$HOME/Android/Sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+
+# opencode
+export PATH=/home/nabi/.opencode/bin:$PATH
+export YDOTOOL_SOCKET=/tmp/.ydotool_socket

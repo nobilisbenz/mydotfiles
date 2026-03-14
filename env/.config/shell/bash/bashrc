@@ -1,0 +1,37 @@
+#  __    _ ___
+# |   \ | |   \     Nobilis Benz (NB)
+# | |\ \| | 0 /     http://www.youtube.com/c/NobilisBenz
+# | | \ | | 0 \     http://www.github.com/NobilisBenz/
+# |_|  \__|___/
+#
+# Modular bash config
+
+# Source modular config files
+for file in ~/.config/shell/bash/*; do
+  [ -f "$file" ] && source "$file"
+done
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+# Starship prompt
+eval "$(starship init bash)"
+. "$HOME/.cargo/env"
+
+# NVM
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+# Bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# Android
+export ANDROID_HOME=$HOME/Android/Sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+
+# opencode
+export PATH=/home/nabi/.opencode/bin:$PATH
+export YDOTOOL_SOCKET=/tmp/.ydotool_socket

@@ -1,0 +1,23 @@
+#  __    _ ___
+# |   \ | |   \     Nobilis Benz (NB)
+# | |\ \| | 0 /     http://www.youtube.com/c/NobilisBenz
+# | | \ | | 0 \     http://www.github.com/NobilisBenz/
+# |_|  \__|___/
+#
+# Modular zsh config
+
+# Source modular config files
+for file in ~/.config/shell/zsh/*; do
+  [ -f "$file" ] && source "$file"
+done
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+# Starship prompt
+eval "$(starship init zsh)"
+
+# NVM
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"

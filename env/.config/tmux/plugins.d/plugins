@@ -1,0 +1,45 @@
+# Tmux plugins (TPM)
+set -g @plugin 'tmux-plugins/tpm'
+
+# Core plugins
+set -g @plugin 'christoomey/vim-tmux-navigator'
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-continuum'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+set -g @plugin 'tmux-plugins/tmux-yank'
+
+# Extras
+set -g @plugin 'fcsonline/tmux-thumbs'
+set -g @plugin 'sainnhe/tmux-fzf'
+set -g @plugin 'wfxr/tmux-fzf-url'
+
+# Theme
+set -g @plugin 'omerxx/catppuccin-tmux'
+set -g @catppuccin_flavor "mocha"
+set -g status-bg "#000000"
+set -g @catppuccin_status_background "#000000"
+set -g @catppuccin_status_left_separator "█"
+set -g @catppuccin_status_right_separator "█"
+set -g @catppuccin_status_fill "icon"
+set -g @catppuccin_status_connect_separator "no"
+set -g @catppuccin_status_module_bg_color "#000000"
+set -g @catppuccin_status_modules_right "directory session"
+
+# Sessionx
+set -g @plugin 'omerxx/tmux-sessionx'
+set -g @sessionx-bind-zo-new-window 'ctrl-y'
+set -g @sessionx-auto-accept 'off'
+set -g @sessionx-bind 's'
+set -g @sessionx-x-path '~/.config'
+set -g @sessionx-window-height '85%'
+set -g @sessionx-window-width '75%'
+set -g @sessionx-zoxide-mode 'on'
+set -g @sessionx-custom-paths-subdirectories 'false'
+set -g @sessionx-filter-current 'false'
+
+# Continuum & Resurrect settings
+set -g @continuum-restore 'on'
+set -g @resurrect-strategy-nvim 'session'
+
+# Initialize TPM (must be at the bottom)
+run '~/.tmux/plugins/tpm/tpm'

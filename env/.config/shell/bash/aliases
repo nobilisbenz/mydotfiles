@@ -1,0 +1,69 @@
+# Aliases
+alias p='pnpm'
+alias m='mpv --ytdl-format=22'
+
+# navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias .3='cd ../../..'
+alias .4='cd ../../../..'
+alias .5='cd ../../../../..'
+
+# vim and tmux
+alias nv="nvim"
+
+alias tn="tmux new -d -s"
+alias tt="tmux ls"
+alias ta="tmux a -t"
+alias ts="tmux switch -t"
+alias tk="tmux kill-session -a"
+alias tka="tmux kill-session -t"
+
+# eza
+alias ls='eza -al --color=always --group-directories-first'
+alias la='eza -a --color=always --group-directories-first'
+alias ll='eza -l --color=always --group-directories-first'
+alias lt='eza -aT --color=always --group-directories-first'
+alias l.='eza -al --color=always --group-directories-first ../'
+alias l..='eza -al --color=always --group-directories-first ../../'
+alias l...='eza -al --color=always --group-directories-first ../../../'
+
+# flags
+alias df='df -h'
+alias free='free -m'
+alias grep='grep --color=auto'
+
+# ps
+alias psa="ps auxf"
+alias psgrep="ps aux | grep -v grep | grep -i -e VSZ -e"
+alias psmem='ps auxf | sort -nr -k 4'
+alias pscpu='ps auxf | sort -nr -k 3'
+
+# Xresources
+alias merge='xrdb -merge ~/.Xresources'
+
+# git
+alias addup='git add -u'
+alias addall='git add .'
+alias branch='git branch'
+alias checkout='git checkout'
+alias clone='git clone'
+alias commit='git commit -m'
+alias fetch='git fetch'
+alias pull='git pull origin'
+alias push='git push origin'
+alias stat='git status'
+alias tag='git tag'
+alias newtag='git tag -a'
+
+# gpg
+alias gpg-check="gpg2 --keyserver-options auto-key-retrieve --verify"
+alias gpg-retrieve="gpg2 --keyserver-options auto-key-retrieve --receive-keys"
+
+# change shell
+alias tobash="sudo chsh $USER -s /bin/bash && echo 'Log out and log back in for change to take effect.'"
+alias tozsh="sudo chsh $USER -s /bin/zsh && echo 'Log out and log back in for change to take effect.'"
+alias tofish="sudo chsh $USER -s /bin/fish && echo 'Log out and log back in for change to take effect.'"
+
+# bare git repo
+alias config="/usr/bin/git --git-dir=$HOME/dotfiles --work-tree=$HOME"

@@ -1,0 +1,26 @@
+# Keybindings
+
+# Window/pane navigation
+bind j resize-pane -D 5
+bind k resize-pane -U 5
+bind l resize-pane -R 5
+bind h resize-pane -L 5
+
+bind -r m resize-pane -Z
+
+# Split panes
+unbind %
+bind v split-window -h
+
+unbind '"'
+bind b split-window -v
+
+# Reload config
+unbind r
+bind r source-file ~/.tmux.conf
+
+# Vim-like copy mode
+bind-key -T copy-mode-vi 'v' send -X begin-selection
+bind-key -T copy-mode-vi 'y' send -X copy-selection
+
+unbind -T copy-mode-vi MouseDragEnd1Pane

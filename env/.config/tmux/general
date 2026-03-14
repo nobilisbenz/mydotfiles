@@ -1,0 +1,20 @@
+# General tmux options
+
+set -g default-terminal "${TERM}"
+set -ag terminal-overrides ",xterm-256color:RGB"
+
+set -g prefix C-f
+unbind C-b
+bind-key C-f send-prefix
+
+set -g base-index 1
+set -g detach-on-destroy off
+set -g escape-time 0
+set -g history-limit 1000000
+set -g renumber-windows on
+set -g set-clipboard on
+set -g status-position top
+
+set -g mouse on
+
+set -sg escape-time 10

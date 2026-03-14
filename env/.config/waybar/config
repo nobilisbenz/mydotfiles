@@ -1,0 +1,69 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 14,
+    "spacing": 2,
+    "modules-left": ["i3"],
+    "modules-right": ["xkeyboard", "memory", "cpu", "gpu", "battery", "tray", "clock"],
+    "margin-left": 15,
+    "margin-right": 15,
+    "exclusive": false,
+
+    "clock": {
+        "format": "{:%H:%M}",
+        "interval": 1
+    },
+
+    "cpu": {
+        "format": "CPU: {usage}%",
+        "interval": 2,
+        "tooltip": false
+    },
+
+    "memory": {
+        "format": "RAM: {usedPercentage}%",
+        "interval": 2,
+        "tooltip": false
+    },
+
+    "gpu": {
+        "format": "GPU: {}",
+        "exec": "nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits | awk '{print $1}'",
+        "interval": 5,
+        "return-type": "text",
+        "tooltip": false
+    },
+
+    "battery": {
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{capacity}%",
+        "format-charging": "AC: {capacity}%",
+        "format-plugged": "AC: {capacity}%",
+        "format-alt": "{icon} {capacity}%",
+        "format-icons": ["", "", "", "", ""],
+        "tooltip-format": "{time_to}, {capacity}%"
+    },
+
+    "tray": {
+        "spacing": 2,
+        "icon-size": 14
+    },
+
+    "i3": {
+        "format": "{name}",
+        "format-focused": "{name}",
+        "format-unfocused": "{name}",
+        "tooltip": false
+    },
+
+    "xkeyboard": {
+        "format": "{layout}",
+        "blacklist": ["num lock"],
+        "tooltip": false
+    },
+
+    "layer": "top"
+}

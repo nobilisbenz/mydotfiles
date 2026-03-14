@@ -1,24 +1,3 @@
 #!/usr/bin/env bash
 
-version="v0.11.1"
-if [ ! -z $NVIM_VERSION ]; then
-    version="$NVIM_VERSION"
-fi
-
-echo "version: \"$version\""
-
-# neovim btw
-if [ ! -d $HOME/neovim ]; then
-    git clone https://github.com/neovim/neovim.git $HOME/neovim
-fi
-
-sudo pacman -S --needed cmake gettext lua51
-
-git -C ~/neovim fetch --all
-git -C ~/neovim checkout $version
-
-make -C ~/neovim clean
-make -C ~/neovim CMAKE_BUILD_TYPE=RelWithDebInfo
-sudo make -C ~/neovim install
-
-rm -rf $HOME/neovim
+paru -S neovim --noconfirm --needed

@@ -1,0 +1,45 @@
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "Fira Code iScript", "FontAwesome", "Font Awesome 6 Free", sans-serif;
+    font-size: 10px;
+    min-height: 0;
+}
+
+window#waybar {
+    background: #000000;
+    color: #ffffff;
+}
+
+module {
+    margin: 0 2px;
+}
+
+#clock,
+#battery,
+#cpu,
+#memory,
+#gpu,
+#xkeyboard,
+#tray {
+    padding: 0 5px;
+}
+
+#i3 {
+    padding: 0 5px;
+    background: #333333;
+}
+
+#battery {
+    color: #ffaa00;
+}
+
+#workspaces button {
+    padding: 0 5px;
+    background: transparent;
+    color: #ffffff;
+}
+
+#workspaces button.focused {
+    background: #333333;
+}

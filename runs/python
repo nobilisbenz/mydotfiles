@@ -15,7 +15,7 @@ NC='\033[0m' # No Color
 
 # Install Python development tools
 print_color $GREEN "Installing Python development tools..."
-sudo pacman -S --needed python python-pip python-virtualenv python-pipenv
+paru -S --needed python python-pip python-virtualenv pipenv
 
 # Install pyenv for Python version management
 if [ ! -d "$HOME/.pyenv" ]; then

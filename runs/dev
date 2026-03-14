@@ -3,4 +3,40 @@
 git config --global user.email "nobilisbenz@gmail.com"
 git config --global user.name "Nobilis Benz"
 
+sudo pacman -S --needed base-devel
+git clone https://aur.archlinux.org/paru.git ~/paru
+pushd ~/paru
+makepkg -si
+popd
 
+paru -S just --noconfirm
+paru -S --noconfirm --needed gimp tldr go fzf rofi-wayland btop bc stylua bun
+paru -S --noconfirm nodejs npm
+go install github.com/air-verse/air@latest
+paru -S ttf-font-awesome waybar ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols --noconfirm
+paru -S ly hyprlock --noconfirm --needed
+paru -S ghostty --noconfirm
+paru -S hyprpaper hyprshot --noconfirm
+paru -Syu wlogout-git --noconfirm --needed
+
+paru -S ffmpeg aalib ascii-image-converter-bin --noconfirm
+curl -sSfL https://get.tur.so/install.sh | bash
+
+# cloudflare stuff
+paru -S cloudflared --noconfirm
+paru -S dosfstools --noconfirm
+paru -S arp-scan avahi nss-mdns --noconfirm
+
+#tools
+
+paru -S --needed --noconfirm \
+    git curl mpv pcmanfm-qt qutebrowser obs-studio \
+    fzf ripgrep jq wl-clipboard wdisplays \
+    nwg-look nwg-displays grim slurp
+
+paru -S pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber pavucontrol --noconfirm --needed
+
+# Install from AUR using paru
+paru -S missioncenter --noconfirm
+paru -S zen-browser-bin --noconfirm
+paru -S nvidia-dkms --noconfirm

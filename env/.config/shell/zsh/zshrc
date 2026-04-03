@@ -7,7 +7,7 @@
 # Modular zsh config
 
 # Source modular config files
-for file in ~/.config/shell/zsh/*; do
+for file in ~/.config/shell/zsh/{env,path,keybindings,completion,aliases,functions}; do
   [ -f "$file" ] && source "$file"
 done
 
@@ -17,7 +17,14 @@ done
 # Starship prompt
 eval "$(starship init zsh)"
 
+# Cargo
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+
 # NVM
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+# Bun
+export BUN_INSTALL="$HOME/.bun"
+[ -d "$BUN_INSTALL" ] && export PATH="$BUN_INSTALL/bin:$PATH"

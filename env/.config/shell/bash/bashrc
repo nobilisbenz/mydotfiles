@@ -7,7 +7,7 @@
 # Modular bash config
 
 # Source modular config files
-for file in ~/.config/shell/bash/*; do
+for file in ~/.config/shell/bash/{env,path,options,aliases,functions}; do
   [ -f "$file" ] && source "$file"
 done
 
@@ -16,7 +16,9 @@ done
 
 # Starship prompt
 eval "$(starship init bash)"
-. "$HOME/.cargo/env"
+
+# Cargo
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
 # NVM
 export NVM_DIR="$HOME/.nvm"
@@ -25,12 +27,11 @@ export NVM_DIR="$HOME/.nvm"
 
 # Bun
 export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
+[ -d "$BUN_INSTALL" ] && export PATH="$BUN_INSTALL/bin:$PATH"
 
 # Android
-export ANDROID_HOME=$HOME/Android/Sdk
-export PATH=$PATH:$ANDROID_HOME/emulator
-export PATH=$PATH:$ANDROID_HOME/platform-tools
-
-# Wayland
-export YDOTOOL_SOCKET=/tmp/.ydotool_socket
+if [ -d "$HOME/Android/Sdk" ]; then
+  export ANDROID_HOME=$HOME/Android/Sdk
+  export PATH=$PATH:$ANDROID_HOME/emulator
+  export PATH=$PATH:$ANDROID_HOME/platform-tools
+fi

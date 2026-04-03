@@ -61,6 +61,5 @@ if ($android_home | path exists) {
     $env.PATH = ($env.PATH | split row (char esep) | append ($android_home | path join "platform-tools"))
 }
 
-# opencode
-$env.PATH = ($env.PATH | split row (char esep) | prepend "/home/nabi/.opencode/bin")
+# Wayland
 $env.YDOTOOL_SOCKET = "/tmp/.ydotool_socket"

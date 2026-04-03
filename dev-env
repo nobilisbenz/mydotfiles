@@ -83,19 +83,39 @@ if [[ -d "$DEV_ENV/env/.local/bin" ]]; then
     done
 fi
 
-# Deploy shell dotfiles
+# Deploy shell dotfiles (~/.bashrc, ~/.zshrc)
 log ""
-log "Deploying shell dotfiles..."
-for dotfile in bashrc zshrc tmux.conf; do
-    src="$DEV_ENV/env/.$dotfile"
-    dest="$HOME/.$dotfile"
+log "Deploying shell entry points..."
+for dotfile in .bashrc .zshrc; do
+    src="$DEV_ENV/env/$dotfile"
+    dest="$HOME/$dotfile"
     if [[ -f "$src" ]]; then
-        log "    copying: .$dotfile -> ~/"
+        log "    copying: $dotfile -> ~/"
         if [[ $dry_run == "0" ]]; then
             cp "$src" "$dest"
         fi
     fi
 done
+
+# Deploy nushell config to its standard location
+if [[ -d "$DEV_ENV/env/.config/shell/nushell" ]]; then
+    log ""
+    log "Deploying nushell config..."
+    nushell_dest="$XDG_CONFIG_HOME/nushell"
+    log "    copying: shell/nushell -> $nushell_dest"
+    if [[ $dry_run == "0" ]]; then
+        rm -rf "$nushell_dest" 2>/dev/null
+        cp -r "$DEV_ENV/env/.config/shell/nushell" "$nushell_dest"
+    fi
+fi
+
+# Deploy starship.toml to XDG_CONFIG_HOME
+if [[ -f "$DEV_ENV/env/.config/starship.toml" ]]; then
+    log "    copying: starship.toml -> $XDG_CONFIG_HOME/"
+    if [[ $dry_run == "0" ]]; then
+        cp "$DEV_ENV/env/.config/starship.toml" "$XDG_CONFIG_HOME/starship.toml"
+    fi
+fi
 
 if [[ ${#failed[@]} -gt 0 ]]; then
     echo ""

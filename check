@@ -77,9 +77,9 @@ log "XDG_CONFIG_HOME: $XDG_CONFIG_HOME"
 log "HOME: $HOME"
 log ""
 
-compare_and_copy "$HOME/.bashrc" "$ENV_DIR/.bashrc" "~/.bashrc"
-compare_and_copy "$HOME/.zshrc" "$ENV_DIR/.zshrc" "~/.zshrc"
-compare_and_copy "$HOME/.tmux.conf" "$ENV_DIR/.tmux.conf" "~/.tmux.conf"
+for dotfile in .bashrc .zshrc .tmux.conf; do
+    compare_and_copy "$HOME/$dotfile" "$ENV_DIR/$dotfile" "~/$dotfile"
+done
 
 if [[ -d "$XDG_CONFIG_HOME" ]]; then
     for config_dir in "$XDG_CONFIG_HOME"/*; do

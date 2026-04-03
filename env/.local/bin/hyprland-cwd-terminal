@@ -18,9 +18,8 @@ if ! hyprctl clients -j | jq -e '.[] | select(.title | test("^'"$TITLE"'$"))' > 
     fi
 
     ghostty --title="$TITLE" -e tmux attach-session -t "$SESSION" &
-    
+
     sleep 0.4
-    hyprctl dispatch movetoworkspace special,pid:$(pgrep -f "ghostty.*$TITLE" | head -1)
 fi
 
-hyprctl dispatch togglespecialworkspace,scratchpad
+hyprctl dispatch togglespecialworkspace

@@ -1,8 +1,7 @@
 # --- Terminal Shell ---
 shell-integration = bash
 class = floating_shell
-# Replicating your tmux_chooser setup
-command = /home/nabi/.local/bin/tmux_chooser
+command = tmux_chooser
 # --- Font Settings ---
 font-family = "FiraCodeiScript"
 font-size = 16

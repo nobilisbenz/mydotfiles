@@ -1,37 +1,53 @@
 {
     "layer": "top",
     "position": "top",
-    "height": 14,
-    "spacing": 2,
-    "modules-left": ["i3"],
-    "modules-right": ["xkeyboard", "memory", "cpu", "gpu", "battery", "tray", "clock"],
-    "margin-left": 15,
-    "margin-right": 15,
-    "exclusive": false,
+    "height": 28,
+    "spacing": 4,
+    "margin-left": 0,
+    "margin-right": 0,
+    "exclusive": true,
+
+    "modules-left": ["hyprland/workspaces"],
+    "modules-center": ["clock"],
+    "modules-right": ["hyprland/language", "pulseaudio", "network", "memory", "cpu", "battery", "tray"],
+
+    "hyprland/workspaces": {
+        "format": "{icon}",
+        "format-icons": {
+            "1": "1",
+            "2": "2",
+            "3": "3",
+            "4": "4",
+            "5": "5",
+            "special": "S"
+        },
+        "on-click": "activate",
+        "sort-by-number": true
+    },
+
+    "hyprland/language": {
+        "format": "{}",
+        "format-en": "EN",
+        "format-ar": "AR",
+        "format-de": "DE"
+    },
 
     "clock": {
         "format": "{:%H:%M}",
-        "interval": 1
+        "format-alt": "{:%A, %B %d}",
+        "tooltip-format": "<tt>{calendar}</tt>"
     },
 
     "cpu": {
-        "format": "CPU: {usage}%",
+        "format": "CPU {usage}%",
         "interval": 2,
         "tooltip": false
     },
 
     "memory": {
-        "format": "RAM: {usedPercentage}%",
+        "format": "RAM {percentage}%",
         "interval": 2,
-        "tooltip": false
-    },
-
-    "gpu": {
-        "format": "GPU: {}",
-        "exec": "nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits | awk '{print $1}'",
-        "interval": 5,
-        "return-type": "text",
-        "tooltip": false
+        "tooltip-format": "{used:0.1f}G / {total:0.1f}G"
     },
 
     "battery": {
@@ -39,31 +55,30 @@
             "warning": 30,
             "critical": 15
         },
-        "format": "{capacity}%",
-        "format-charging": "AC: {capacity}%",
-        "format-plugged": "AC: {capacity}%",
-        "format-alt": "{icon} {capacity}%",
-        "format-icons": ["", "", "", "", ""],
-        "tooltip-format": "{time_to}, {capacity}%"
+        "format": "BAT {capacity}%",
+        "format-charging": "AC {capacity}%",
+        "format-plugged": "AC {capacity}%",
+        "tooltip-format": "{timeTo}"
+    },
+
+    "network": {
+        "format-wifi": "WiFi",
+        "format-ethernet": "ETH",
+        "format-disconnected": "OFF",
+        "tooltip-format-wifi": "{essid} ({signalStrength}%)",
+        "tooltip-format-ethernet": "{ifname}",
+        "on-click": "nm-connection-editor"
+    },
+
+    "pulseaudio": {
+        "format": "VOL {volume}%",
+        "format-muted": "MUTE",
+        "on-click": "pavucontrol",
+        "tooltip": false
     },
 
     "tray": {
-        "spacing": 2,
+        "spacing": 8,
         "icon-size": 14
-    },
-
-    "i3": {
-        "format": "{name}",
-        "format-focused": "{name}",
-        "format-unfocused": "{name}",
-        "tooltip": false
-    },
-
-    "xkeyboard": {
-        "format": "{layout}",
-        "blacklist": ["num lock"],
-        "tooltip": false
-    },
-
-    "layer": "top"
+    }
 }

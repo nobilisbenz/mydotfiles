@@ -1,42 +1,184 @@
 #!/usr/bin/env bash
 
+# ──────────────────────────────────────────────
+# Base Arch Linux + Hyprland + Wayland Setup
+# Works on any machine (no NVIDIA-specific packages)
+# ──────────────────────────────────────────────
+
+set -e
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+NC='\033[0m'
+
+print() { echo -e "${GREEN}:: $*${NC}"; }
+warn()  { echo -e "${YELLOW}:: $*${NC}"; }
+
+# ──────────────────────────────────────────────
+# Git
+# ──────────────────────────────────────────────
+
+print "Configuring git..."
 git config --global user.email "nobilisbenz@gmail.com"
 git config --global user.name "Nobilis Benz"
 
-sudo pacman -S --needed base-devel
-git clone https://aur.archlinux.org/paru.git ~/paru
-pushd ~/paru
-makepkg -si
-popd
+# ──────────────────────────────────────────────
+# Paru (AUR helper)
+# ──────────────────────────────────────────────
 
-paru -S just --noconfirm
-paru -S --noconfirm --needed gimp tldr go fzf rofi-wayland btop bc stylua bun
-paru -S --noconfirm nodejs npm
-go install github.com/air-verse/air@latest
-paru -S ttf-font-awesome waybar ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols --noconfirm
-paru -S ly hyprlock --noconfirm --needed
-paru -S ghostty --noconfirm
-paru -S hyprpaper hyprshot --noconfirm
-paru -Syu wlogout-git --noconfirm --needed
+if ! command -v paru &>/dev/null; then
+    print "Installing paru..."
+    sudo pacman -S --needed --noconfirm base-devel git
+    git clone https://aur.archlinux.org/paru.git /tmp/paru-build
+    pushd /tmp/paru-build
+    makepkg -si --noconfirm
+    popd
+    rm -rf /tmp/paru-build
+else
+    warn "paru already installed"
+fi
 
-paru -S ffmpeg aalib ascii-image-converter-bin --noconfirm
-curl -sSfL https://get.tur.so/install.sh | bash
+# ──────────────────────────────────────────────
+# Hyprland + Wayland Core
+# ──────────────────────────────────────────────
 
-# cloudflare stuff
-paru -S cloudflared --noconfirm
-paru -S dosfstools --noconfirm
-paru -S arp-scan avahi nss-mdns --noconfirm
+print "Installing Hyprland + Wayland stack..."
+paru -S --needed --noconfirm \
+    hyprland \
+    hyprlock \
+    hyprpaper \
+    hyprshot \
+    xdg-desktop-portal-hyprland \
+    waybar \
+    rofi-wayland \
+    wl-clipboard \
+    cliphist \
+    grim \
+    slurp \
+    wdisplays \
+    nwg-displays \
+    nwg-look \
+    brightnessctl
 
-#tools
+# ──────────────────────────────────────────────
+# Login Manager (ly on tty2)
+# ──────────────────────────────────────────────
+
+print "Installing ly display manager..."
+paru -S --needed --noconfirm ly
+
+print "Configuring ly on tty2..."
+sudo mkdir -p /etc/ly
+if [ -f /etc/ly/config.ini ]; then
+    sudo sed -i 's/^#\?tty\s*=.*/tty = 2/' /etc/ly/config.ini
+else
+    echo -e "[Settings]\ntty = 2" | sudo tee /etc/ly/config.ini > /dev/null
+fi
+sudo systemctl enable ly.service
+
+# ──────────────────────────────────────────────
+# Terminal + Shell Tools
+# ──────────────────────────────────────────────
+
+print "Installing terminal and shell tools..."
+paru -S --needed --noconfirm \
+    ghostty \
+    tmux \
+    fzf \
+    ripgrep \
+    jq \
+    btop \
+    eza \
+    bc \
+    tldr
+
+# ──────────────────────────────────────────────
+# Audio (Pipewire)
+# ──────────────────────────────────────────────
+
+print "Installing audio stack..."
+paru -S --needed --noconfirm \
+    pipewire \
+    pipewire-pulse \
+    pipewire-alsa \
+    pipewire-jack \
+    wireplumber \
+    pavucontrol
+
+# ──────────────────────────────────────────────
+# Fonts
+# ──────────────────────────────────────────────
+
+print "Installing fonts..."
+paru -S --needed --noconfirm \
+    ttf-jetbrains-mono-nerd \
+    ttf-nerd-fonts-symbols \
+    ttf-font-awesome \
+    noto-fonts \
+    noto-fonts-emoji
+
+# ──────────────────────────────────────────────
+# Dev Tools
+# ──────────────────────────────────────────────
+
+print "Installing dev tools..."
+paru -S --needed --noconfirm \
+    neovim \
+    go \
+    nodejs \
+    npm \
+    bun \
+    just \
+    stylua
+
+# ──────────────────────────────────────────────
+# Applications
+# ──────────────────────────────────────────────
+
+print "Installing applications..."
+paru -S --needed --noconfirm \
+    zen-browser-bin \
+    qutebrowser \
+    pcmanfm-qt \
+    mpv \
+    ffmpeg \
+    obs-studio \
+    gimp \
+    missioncenter
+
+# ──────────────────────────────────────────────
+# Network & System
+# ──────────────────────────────────────────────
+
+print "Installing network and system tools..."
+paru -S --needed --noconfirm \
+    networkmanager \
+    nm-connection-editor \
+    cloudflared \
+    dosfstools \
+    arp-scan \
+    avahi \
+    nss-mdns \
+    acpi
+
+# ──────────────────────────────────────────────
+# Misc
+# ──────────────────────────────────────────────
 
 paru -S --needed --noconfirm \
-    git curl mpv pcmanfm-qt qutebrowser obs-studio \
-    fzf ripgrep jq wl-clipboard wdisplays \
-    nwg-look nwg-displays grim slurp
+    aalib \
+    ascii-image-converter-bin \
+    wlogout-git
 
-paru -S pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber pavucontrol --noconfirm --needed
+# Turso
+if ! command -v turso &>/dev/null; then
+    print "Installing Turso..."
+    curl -sSfL https://get.tur.so/install.sh | bash
+fi
 
-# Install from AUR using paru
-paru -S missioncenter --noconfirm
-paru -S zen-browser-bin --noconfirm
-paru -S nvidia-dkms --noconfirm
+# Go tools
+print "Installing Go tools..."
+go install github.com/air-verse/air@latest
+
+print "Base setup complete!"

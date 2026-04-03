@@ -1,0 +1,14 @@
+configuration {
+    modi: "drun,window,run";
+    show-icons: true;
+    icon-theme: "Papirus-Dark";
+    font: "Fira Code 12";
+    display-drun: "Apps";
+    display-window: "Windows";
+    display-run: "Run";
+    drun-display-format: "{name}";
+    window-format: "{w} {c} {t}";
+    terminal: "ghostty";
+}
+
+@theme "~/.config/rofi/theme.rasi"

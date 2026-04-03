@@ -23,6 +23,7 @@ log() {
 
 log "env: $DEV_ENV"
 
+# Gather all config directories
 configs=($(ls -d $DEV_ENV/env/.config/*/ 2>/dev/null | xargs -n1 basename))
 configs+=("ALL")
 
@@ -44,17 +45,17 @@ failed=()
 for choice in "${selected[@]}"; do
     src="$DEV_ENV/env/.config/$choice"
     dest="$XDG_CONFIG_HOME/$choice"
-    
+
     if [[ ! -d "$src" ]]; then
         echo "Skipping $choice - not a directory"
         continue
     fi
-    
+
     log "    removing: rm -rf $dest"
     if [[ $dry_run == "0" ]]; then
         rm -rf "$dest" 2>/dev/null
     fi
-    
+
     log "    copying: $choice -> $XDG_CONFIG_HOME"
     if [[ $dry_run == "0" ]]; then
         if cp -r "$src" "$dest"; then
@@ -62,6 +63,36 @@ for choice in "${selected[@]}"; do
         else
             echo "FAILED: $choice"
             failed+=("$choice")
+        fi
+    fi
+done
+
+# Deploy .local/bin scripts
+if [[ -d "$DEV_ENV/env/.local/bin" ]]; then
+    log ""
+    log "Deploying scripts to ~/.local/bin..."
+    mkdir -p "$HOME/.local/bin"
+    for script in "$DEV_ENV/env/.local/bin"/*; do
+        [[ -f "$script" ]] || continue
+        name=$(basename "$script")
+        log "    copying: $name -> ~/.local/bin/"
+        if [[ $dry_run == "0" ]]; then
+            cp "$script" "$HOME/.local/bin/$name"
+            chmod +x "$HOME/.local/bin/$name"
+        fi
+    done
+fi
+
+# Deploy shell dotfiles
+log ""
+log "Deploying shell dotfiles..."
+for dotfile in bashrc zshrc tmux.conf; do
+    src="$DEV_ENV/env/.$dotfile"
+    dest="$HOME/.$dotfile"
+    if [[ -f "$src" ]]; then
+        log "    copying: .$dotfile -> ~/"
+        if [[ $dry_run == "0" ]]; then
+            cp "$src" "$dest"
         fi
     fi
 done

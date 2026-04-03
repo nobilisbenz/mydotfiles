@@ -1,23 +1,26 @@
 #!/usr/bin/env bash
 
-# Define color codes
+# ──────────────────────────────────────────────
+# Legion 5 RTX 3060 - NVIDIA + Wayland extras
+# Run AFTER the base 'dev' script
+# ──────────────────────────────────────────────
+
+set -e
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 NC='\033[0m'
 
-print_color() {
-    local color="$1"
-    shift
-    echo -e "${color}$*${NC}"
-}
+print() { echo -e "${GREEN}:: $*${NC}"; }
+warn()  { echo -e "${YELLOW}:: $*${NC}"; }
+err()   { echo -e "${RED}:: $*${NC}"; }
 
-print_color $GREEN "🚀 Starting Legion 5 (RTX 3060) Wayland Setup..."
+# ──────────────────────────────────────────────
+# NVIDIA Drivers
+# ──────────────────────────────────────────────
 
-# 1. NVIDIA Drivers & Wayland Essentials
-# 'nvidia-dkms' is correct for the custom kernel/Legion hardware.
-# 'egl-wayland' is critical for NVIDIA + Wayland stability.
-print_color $YELLOW "Installing NVIDIA drivers and Wayland bridges..."
+print "Installing NVIDIA drivers..."
 paru -S --needed --noconfirm \
     nvidia-dkms \
     nvidia-utils \
@@ -25,26 +28,53 @@ paru -S --needed --noconfirm \
     egl-wayland \
     libva-nvidia-driver
 
-# 2. Modern Laptop Power Management
-# We use power-profiles-daemon because it integrates with Waybar/KDE/Gnome UI.
-# 'thermald' prevents your Legion from thermal throttling too aggressively.
-print_color $YELLOW "Configuring power and thermal management..."
-sudo pacman -S --needed --noconfirm \
-    power-profiles-daemon \
-    thermald \
-    acpi \
-    brightnessctl
+# ──────────────────────────────────────────────
+# Hyprland NVIDIA environment
+# ──────────────────────────────────────────────
 
-# Enable services
+print "Writing NVIDIA env config for Hyprland..."
+mkdir -p ~/.config/hypr
+cat > ~/.config/hypr/nvidia.conf << 'EOF'
+# NVIDIA-specific environment variables
+# This file is sourced by hyprland.conf on NVIDIA machines
+
+env = LIBVA_DRIVER_NAME,nvidia
+env = __GLX_VENDOR_LIBRARY_NAME,nvidia
+env = NVD_BACKEND,direct
+EOF
+
+# Add source line to hyprland.conf if not already present
+HYPR_CONF="$HOME/.config/hypr/hyprland.conf"
+if [ -f "$HYPR_CONF" ] && ! grep -q "nvidia.conf" "$HYPR_CONF"; then
+    # Insert after the env block
+    echo -e "\n# NVIDIA (auto-added by LEGION script)\nsource = ~/.config/hypr/nvidia.conf" >> "$HYPR_CONF"
+    print "Added nvidia.conf source to hyprland.conf"
+fi
+
+# ──────────────────────────────────────────────
+# Power & Thermal Management
+# ──────────────────────────────────────────────
+
+print "Installing power management..."
+paru -S --needed --noconfirm \
+    power-profiles-daemon \
+    thermald
+
 sudo systemctl enable --now power-profiles-daemon
 sudo systemctl enable --now thermald
 
-# 3. Modern Input (Wayland uses libinput, not Synaptics)
-print_color $YELLOW "Setting up input drivers..."
-sudo pacman -S --needed --noconfirm libinput
+# ──────────────────────────────────────────────
+# Input drivers
+# ──────────────────────────────────────────────
 
-# 4. Critical NVIDIA Kernel Modesetting
-# Without this, Hyprland/Wayland may boot to a black screen.
-print_color $RED "IMPORTANT: Ensure 'nvidia_drm.modeset=1' is in your GRUB/systemd-boot parameters!"
+paru -S --needed --noconfirm libinput
 
-print_color $GREEN "✅ Installation completed. Please reboot to apply NVIDIA kernel changes."
+# ──────────────────────────────────────────────
+# Kernel parameter reminder
+# ──────────────────────────────────────────────
+
+err "IMPORTANT: Ensure 'nvidia_drm.modeset=1' is in your kernel parameters!"
+err "  For GRUB: edit /etc/default/grub -> GRUB_CMDLINE_LINUX_DEFAULT"
+err "  For systemd-boot: edit /boot/loader/entries/*.conf"
+echo ""
+print "NVIDIA setup complete. Reboot to apply kernel changes."

@@ -32,6 +32,5 @@ export ANDROID_HOME=$HOME/Android/Sdk
 export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 
-# opencode
-export PATH=/home/nabi/.opencode/bin:$PATH
+# Wayland
 export YDOTOOL_SOCKET=/tmp/.ydotool_socket

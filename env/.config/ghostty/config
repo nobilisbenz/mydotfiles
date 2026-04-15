@@ -38,10 +38,9 @@ palette = 14=#46d9ff
 palette = 15=#dfdfdf
 
 # --- Window Appearance ---
-background-opacity = 1.0
+background-opacity = 0.90
 window-padding-x = 6
-window-padding-y = 0
-#window-decoration = none
+window-padding-y = 6
 window-decoration = false
 gtk-titlebar = false
 

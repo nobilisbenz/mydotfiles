@@ -145,7 +145,10 @@ paru -S --needed --noconfirm \
     ffmpeg \
     obs-studio \
     gimp \
-    missioncenter
+    blender \
+    aseprite \
+    opencode-bin \
+    awww 
 
 # ──────────────────────────────────────────────
 # Network & System

@@ -1,25 +1,35 @@
 #!/bin/bash
 
 SESSION="opencode"
-TITLE="ghostty_scratchpad"
 
-if ! hyprctl clients -j | jq -e '.[] | select(.title | test("^'"$TITLE"'$"))' > /dev/null 2>&1; then
-    FOCUSED=$(hyprctl activewindow -j 2>/dev/null)
-    if [ -n "$FOCUSED" ]; then
-        PID=$(echo "$FOCUSED" | jq -r '.pid')
-        [ -n "$PID" ] && CWD=$(readlink /proc/$PID/cwd 2>/dev/null)
-    fi
-    [ ! -d "$CWD" ] && CWD=$HOME
+# Check if the scratchpad already exists
+EXISTING=$(hyprctl clients -j | jq -r '.[] | select(.title == "ghostty_scratchpad") | .address')
 
-    if ! tmux has-session -t "$SESSION" 2>/dev/null; then
-        tmux new-session -d -s "$SESSION" -c "$CWD"
-    else
-        tmux send-keys -t "$SESSION" " cd '$CWD' && clear" Enter
-    fi
-
-    ghostty --title="$TITLE" -e tmux attach-session -t "$SESSION" &
-
-    sleep 0.4
+if [ -n "$EXISTING" ]; then
+    hyprctl dispatch togglespecialworkspace
+    exit 0
 fi
 
+# Get current directory of focused window
+FOCUSED=$(hyprctl activewindow -j 2>/dev/null)
+if [ -n "$FOCUSED" ]; then
+    PID=$(echo "$FOCUSED" | jq -r '.pid')
+    [ -n "$PID" ] && CWD=$(readlink /proc/$PID/cwd 2>/dev/null)
+fi
+[ ! -d "$CWD" ] && CWD=$HOME
+
+# Handle Tmux session
+if ! tmux has-session -t "$SESSION" 2>/dev/null; then
+    tmux new-session -d -s "$SESSION" -c "$CWD"
+else
+    tmux send-keys -t "$SESSION" " cd '$CWD' && clear" Enter
+fi
+
+# Launch Ghostty. 
+# Because of the 'windowrulev2' in hyprland.conf, 
+# it will automatically float, resize, and center itself.
+/usr/bin/ghostty --title="ghostty_scratchpad" -e tmux attach-session -t "$SESSION" &
+
+# Briefly wait for it to map and then show the workspace
+sleep 0.2
 hyprctl dispatch togglespecialworkspace

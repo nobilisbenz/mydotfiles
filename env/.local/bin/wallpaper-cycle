@@ -1,0 +1,29 @@
+#!/bin/bash
+
+DIR="$HOME/Pictures"
+INDEX_FILE="$HOME/.cache/wallpaper_index"
+
+[[ -f "$INDEX_FILE" ]] || echo "0" > "$INDEX_FILE"
+INDEX=$(cat "$INDEX_FILE")
+
+mapfile -t images < <(ls -1 "$DIR"/*.jpg "$DIR"/*.png "$DIR"/*.jpeg "$DIR"/*.webp 2>/dev/null)
+
+[[ ${#images[@]} -eq 0 ]] && exit 1
+
+count=${#images[@]}
+current=$((INDEX % count))
+
+action="${1:-next}"
+
+if [[ "$action" == "next" ]]; then
+    current=$(( (current + 1) % count ))
+elif [[ "$action" == "prev" ]]; then
+    current=$(( (current - 1 + count) % count ))
+fi
+
+echo "$current" > "$INDEX_FILE"
+wallpaper="${images[$current]}"
+
+gsettings set org.gnome.desktop.background picture-uri "file://$wallpaper"
+gsettings set org.gnome.desktop.background picture-uri-dark "file://$wallpaper"
+awww img "$wallpaper"

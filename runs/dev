@@ -148,6 +148,7 @@ paru -S --needed --noconfirm \
     gimp \
     blender \
     aseprite \
+    telegram-desktop \
     claude-code \
     figma-linux \
     open-pencil-bin \

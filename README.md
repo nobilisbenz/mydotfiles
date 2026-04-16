@@ -44,3 +44,9 @@ wifi.backend=iwd
 ```
 
 sudo systemctl restart NetworkManager
+
+## others
+
+```
+faillock --user nobilis --reset
+```

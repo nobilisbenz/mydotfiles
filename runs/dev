@@ -147,6 +147,8 @@ paru -S --needed --noconfirm \
     gimp \
     blender \
     aseprite \
+    claude-code \
+    figma-linux \
     opencode-bin \
     awww 
 

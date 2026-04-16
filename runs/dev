@@ -89,6 +89,7 @@ paru -S --needed --noconfirm \
     ripgrep \
     jq \
     btop \
+    nvtop \
     eza \
     bc \
     tldr

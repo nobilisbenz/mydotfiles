@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 # ──────────────────────────────────────────────
-# Legion 5 RTX 3060 - NVIDIA + Wayland extras
-# Run AFTER the base 'dev' script
+# Legion 5 RTX 3060 - Complete Automation
 # ──────────────────────────────────────────────
 
 set -e
@@ -16,65 +15,79 @@ print() { echo -e "${GREEN}:: $*${NC}"; }
 warn()  { echo -e "${YELLOW}:: $*${NC}"; }
 err()   { echo -e "${RED}:: $*${NC}"; }
 
-# ──────────────────────────────────────────────
-# NVIDIA Drivers
-# ──────────────────────────────────────────────
+# 1. Enable Multilib (Required for lib32-nvidia-utils)
+if ! grep -q "^\[multilib\]" /etc/pacman.conf; then
+    print "Enabling multilib repository..."
+    sudo sed -i '/^#\[multilib\]/,/^#Include = \/etc\/pacman.d\/mirrorlist/ s/^#//' /etc/pacman.conf
+    sudo pacman -Syu --noconfirm
+fi
 
-print "Installing NVIDIA drivers..."
+# 2. Core Drivers & Headers [cite: 3]
+print "Installing NVIDIA drivers and kernel headers..."
 paru -S --needed --noconfirm \
+    linux-headers \
     nvidia-dkms \
     nvidia-utils \
+    lib32-nvidia-utils \
     nvidia-settings \
     egl-wayland \
-    libva-nvidia-driver
+    libva-nvidia-driver \
+    nvidia-prime \
+    envycontrol
 
-# ──────────────────────────────────────────────
-# Hyprland NVIDIA environment
-# ──────────────────────────────────────────────
+# 3. Automate Mkinitcpio (Early KMS)
+print "Configuring Early KMS in mkinitcpio..."
+if ! grep -q "nvidia nvidia_modeset nvidia_uvm nvidia_drm" /etc/mkinitcpio.conf; then
+    sudo sed -i 's/^MODULES=(/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm /' /etc/mkinitcpio.conf
+    sudo mkinitcpio -P
+fi
 
+# 4. Automate Kernel Parameters 
+PARAM="nvidia-drm.modeset=1"
+
+# Check for GRUB
+if [ -f /etc/default/grub ]; then
+    print "Automating GRUB kernel parameters..."
+    if ! grep -q "$PARAM" /etc/default/grub; then
+        sudo sed -i "/GRUB_CMDLINE_LINUX_DEFAULT/ s/\"$/ $PARAM\"/" /etc/default/grub
+        sudo grub-mkconfig -o /boot/grub/grub.cfg
+    fi
+# Check for systemd-boot
+elif [ -d /boot/loader/entries/ ]; then
+    print "Automating systemd-boot kernel parameters..."
+    for entry in /boot/loader/entries/*.conf; do
+        if ! grep -q "$PARAM" "$entry"; then
+            sudo sed -i "/^options/ s/$/ $PARAM/" "$entry"
+        fi
+    done
+fi
+
+# 5. Hyprland Environment Config [cite: 3, 4]
 print "Writing NVIDIA env config for Hyprland..."
 mkdir -p ~/.config/hypr
 cat > ~/.config/hypr/nvidia.conf << 'EOF'
-# NVIDIA-specific environment variables
-# This file is sourced by hyprland.conf on NVIDIA machines
-
 env = LIBVA_DRIVER_NAME,nvidia
 env = __GLX_VENDOR_LIBRARY_NAME,nvidia
 env = NVD_BACKEND,direct
+cursor {
+    no_hardware_cursors = true
+}
 EOF
 
-# Add source line to hyprland.conf if not already present
+# Ensure source in hyprland.conf [cite: 4]
 HYPR_CONF="$HOME/.config/hypr/hyprland.conf"
 if [ -f "$HYPR_CONF" ] && ! grep -q "nvidia.conf" "$HYPR_CONF"; then
-    # Insert after the env block
-    echo -e "\n# NVIDIA (auto-added by LEGION script)\nsource = ~/.config/hypr/nvidia.conf" >> "$HYPR_CONF"
-    print "Added nvidia.conf source to hyprland.conf"
+    echo -e "\n# NVIDIA Setup\nsource = ~/.config/hypr/nvidia.conf" >> "$HYPR_CONF"
 fi
 
-# ──────────────────────────────────────────────
-# Power & Thermal Management
-# ──────────────────────────────────────────────
-
-print "Installing power management..."
-paru -S --needed --noconfirm \
-    power-profiles-daemon \
-    thermald
-
+# 6. Stabilization & Power [cite: 4]
+print "Enabling persistence and power management..."
+sudo systemctl enable --now nvidia-persistenced
 sudo systemctl enable --now power-profiles-daemon
 sudo systemctl enable --now thermald
 
-# ──────────────────────────────────────────────
-# Input drivers
-# ──────────────────────────────────────────────
+# 7. Set Hybrid Mode
+print "Setting graphics to Hybrid mode..."
+sudo envycontrol -s hybrid
 
-paru -S --needed --noconfirm libinput
-
-# ──────────────────────────────────────────────
-# Kernel parameter reminder
-# ──────────────────────────────────────────────
-
-err "IMPORTANT: Ensure 'nvidia_drm.modeset=1' is in your kernel parameters!"
-err "  For GRUB: edit /etc/default/grub -> GRUB_CMDLINE_LINUX_DEFAULT"
-err "  For systemd-boot: edit /boot/loader/entries/*.conf"
-echo ""
-print "NVIDIA setup complete. Reboot to apply kernel changes."
+print "Automation complete. Final reboot recommended."

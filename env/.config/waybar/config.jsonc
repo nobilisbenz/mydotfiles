@@ -1,0 +1,100 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 32,
+    "spacing": 6,
+    "margin-left": 10,
+    "margin-right": 10,
+    "exclusive": true,
+
+    "modules-left": ["hyprland/workspaces"],
+    "modules-center": ["custom/island-center"],
+    "modules-right": ["battery", "memory", "cpu", "network", "pulseaudio", "tray"],
+
+    "hyprland/workspaces": {
+        "format": "{icon}",
+        "format-icons": {
+            "1": "MAIN",
+            "2": "DEV",
+            "3": "REF",
+            "4": "VOD",
+            "5": "WWW",
+            "special": "S"
+        },
+        "filterEmpty": true,
+        "on-click": "activate",
+        "sort-by-number": true
+    },
+
+    "custom/island-center": {
+        "format": "{}",
+        "exec": "~/.config/waybar/island-center.sh",
+        "return": true,
+        "filterEmpty": true,
+        "interval": 1
+    },
+
+    "custom/island-right": {
+        "format": "{}",
+        "exec": "~/.config/waybar/island-right.sh",
+        "filterEmpty": true,
+        "interval": 2
+    },
+
+    "hyprland/language": {
+        "format": "{}",
+        "format-en": "EN",
+        "format-ar": "AR",
+        "format-de": "DE"
+    },
+
+    "clock": {
+        "format": "{:%H:%M}",
+        "format-alt": "{:%A, %B %d}",
+        "tooltip-format": "<tt>{calendar}</tt>"
+    },
+
+    "cpu": {
+        "format": "CPU {}%",
+        "interval": 2,
+        "tooltip": false
+    },
+
+    "memory": {
+        "format": "RAM {}%",
+        "interval": 2,
+        "tooltip-format": "{used:0.1f}G / {total:0.1f}G"
+    },
+
+    "battery": {
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "BAT {}%",
+        "format-charging": "AC {}%",
+        "format-plugged": "AC {}%",
+        "tooltip-format": "{timeTo}"
+    },
+
+    "network": {
+        "format-wifi": "Online",
+        "format-ethernet": "ETH",
+        "format-disconnected": "Offline",
+        "tooltip-format-wifi": "{essid} ({signalStrength}%)",
+        "tooltip-format-ethernet": "{ifname}",
+        "on-click": "nm-connection-editor"
+    },
+
+    "pulseaudio": {
+        "format": "VOL {}%",
+        "format-muted": "MUTE",
+        "on-click": "pavucontrol",
+        "tooltip": false
+    },
+
+    "tray": {
+        "spacing": 4,
+        "icon-size": 12
+    }
+}

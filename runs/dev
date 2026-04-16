@@ -141,7 +141,7 @@ print "Installing applications..."
 paru -S --needed --noconfirm \
     zen-browser-bin \
     qutebrowser \
-    pcmanfm-qt \
+    thunar \
     mpv \
     ffmpeg \
     obs-studio \
@@ -150,6 +150,7 @@ paru -S --needed --noconfirm \
     aseprite \
     claude-code \
     figma-linux \
+    open-pencil-bin \
     opencode-bin \
     awww 
 

@@ -62,25 +62,7 @@ elif [ -d /boot/loader/entries/ ]; then
     done
 fi
 
-# 5. Hyprland Environment Config [cite: 3, 4]
-print "Writing NVIDIA env config for Hyprland..."
-mkdir -p ~/.config/hypr
-cat > ~/.config/hypr/nvidia.conf << 'EOF'
-env = LIBVA_DRIVER_NAME,nvidia
-env = __GLX_VENDOR_LIBRARY_NAME,nvidia
-env = NVD_BACKEND,direct
-cursor {
-    no_hardware_cursors = true
-}
-EOF
-
-# Ensure source in hyprland.conf [cite: 4]
-HYPR_CONF="$HOME/.config/hypr/hyprland.conf"
-if [ -f "$HYPR_CONF" ] && ! grep -q "nvidia.conf" "$HYPR_CONF"; then
-    echo -e "\n# NVIDIA Setup\nsource = ~/.config/hypr/nvidia.conf" >> "$HYPR_CONF"
-fi
-
-# 6. Stabilization & Power [cite: 4]
+# 5. Stabilization & Power [cite: 4]
 print "Enabling persistence and power management..."
 sudo systemctl enable --now nvidia-persistenced
 sudo systemctl enable --now power-profiles-daemon

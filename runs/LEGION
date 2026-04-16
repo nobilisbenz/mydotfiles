@@ -24,7 +24,23 @@ fi
 
 # 2. Core Drivers & Headers [cite: 3]
 print "Installing NVIDIA drivers and kernel headers..."
-paru -S --needed --noconfirm \
+
+retry_paru() {
+    local max_attempts=3
+    local attempt=1
+    while [ $attempt -le $max_attempts ]; do
+        if paru -S --needed --noconfirm "$@"; then
+            return 0
+        fi
+        warn "Attempt $attempt failed, retrying in 5 seconds..."
+        sleep 5
+        attempt=$((attempt + 1))
+    done
+    err "Failed after $max_attempts attempts"
+    return 1
+}
+
+retry_paru \
     linux-headers \
     nvidia-dkms \
     nvidia-utils \
@@ -66,7 +82,9 @@ fi
 print "Enabling persistence and power management..."
 sudo systemctl enable --now nvidia-persistenced
 sudo systemctl enable --now power-profiles-daemon
-sudo systemctl enable --now thermald
+if systemctl list-unit-files thermald.service &>/dev/null; then
+    sudo systemctl enable --now thermald
+fi
 
 # 7. Set Hybrid Mode
 print "Setting graphics to Hybrid mode..."

@@ -50,3 +50,9 @@ sudo systemctl restart NetworkManager
 ```
 faillock --user nobilis --reset
 ```
+
+sudo nvim /etc/pam.d/system-auth
+
+```
+/etc/pam.d/system-auth
+```

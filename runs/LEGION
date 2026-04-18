@@ -78,16 +78,24 @@ elif [ -d /boot/loader/entries/ ]; then
     done
 fi
 
-# 5. Stabilization & Power [cite: 4]
+# 5. Set Hybrid Mode (MUST load driver BEFORE nvidia-persistenced)
+print "Setting graphics to Hybrid mode..."
+sudo envycontrol -s hybrid
+
+print "Loading NVIDIA kernel modules..."
+sudo modprobe nvidia nvidia_modeset nvidia_uvm nvidia_drm 2>/dev/null || true
+sleep 3
+
+# 6. Stabilization & Power [cite: 4]
 print "Enabling persistence and power management..."
-sudo systemctl enable --now nvidia-persistenced
+
+current_mode=$(sudo envycontrol -s 2>/dev/null | grep -i mode | head -1 || echo "")
+if [[ "$current_mode" == *"nvidia"* ]] || [[ "$current_mode" == *"hybrid"* && -e /dev/nvidia0 ]]; then
+    sudo systemctl enable --now nvidia-persistenced || warn "nvidia-persistenced failed - may require reboot"
+fi
 sudo systemctl enable --now power-profiles-daemon
 if systemctl list-unit-files thermald.service &>/dev/null; then
     sudo systemctl enable --now thermald
 fi
-
-# 7. Set Hybrid Mode
-print "Setting graphics to Hybrid mode..."
-sudo envycontrol -s hybrid
 
 print "Automation complete. Final reboot recommended."

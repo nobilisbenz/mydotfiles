@@ -41,7 +41,7 @@ retry_paru() {
 }
 
 retry_paru \
-    linux-headers \
+    linux-zen-headers \
     nvidia-dkms \
     nvidia-utils \
     lib32-nvidia-utils \
@@ -49,7 +49,9 @@ retry_paru \
     egl-wayland \
     libva-nvidia-driver \
     nvidia-prime \
-    envycontrol
+    envycontrol \
+    libglvnd \
+    opencl-nvidia
 
 # 3. Automate Mkinitcpio (Early KMS)
 print "Configuring Early KMS in mkinitcpio..."
@@ -57,6 +59,10 @@ if ! grep -q "nvidia nvidia_modeset nvidia_uvm nvidia_drm" /etc/mkinitcpio.conf;
     sudo sed -i 's/^MODULES=(/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm /' /etc/mkinitcpio.conf
     sudo mkinitcpio -P
 fi
+
+# Reinstall DKMS for Zen kernel (critical after headers update)
+print "Reinstalling NVIDIA DKMS for current kernel..."
+sudo dkms autoinstall 2>/dev/null || sudo nvidia-smi 2>/dev/null || true
 
 # 4. Automate Kernel Parameters 
 PARAM="nvidia-drm.modeset=1"
@@ -98,4 +104,23 @@ if systemctl list-unit-files thermald.service &>/dev/null; then
     sudo systemctl enable --now thermald
 fi
 
-print "Automation complete. Final reboot recommended."
+# 7. Verify GPU Detection
+print "Verifying GPU detection..."
+sleep 2
+
+GPU_DETECTED=$(lspci | grep -iE "VGA.*3060|GeForce.*30" || nvidia-smi --query-gpu=name --format=csv,noheader 2>/dev/null || echo "")
+
+if [ -n "$GPU_DETECTED" ]; then
+    print "GPU detected: $GPU_DETECTED"
+    nvidia-smi --query-gpu=name,driver_version,power.limit --format=csv
+else
+    err "GPU NOT detected! Check secure boot, fast boot, or kernel mode settings in BIOS"
+    warn "If using hybrid mode, reboot and wait for nvidia-drm to load"
+    warn "Also run: lsmod | grep nvidia to verify modules loaded"
+fi
+
+# 8. Install nvtop for monitoring
+print "Installing nvtop for GPU monitoring..."
+retry_paru nvtop 2>/dev/null || sudo pacman -S --noconfirm nvtop 2>/dev/null || true
+
+print "Automation complete. Reboot required for drivers to load properly."

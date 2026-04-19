@@ -152,7 +152,7 @@ paru -S --needed --noconfirm \
     claude-code \
     figma-linux \
     open-pencil-bin \
-    opencode-bin \
+    opencode \
     awww 
 
 # ──────────────────────────────────────────────
